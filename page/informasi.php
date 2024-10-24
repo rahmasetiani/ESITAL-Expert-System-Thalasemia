@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +13,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="../asset/css/index.css">
     <link rel="stylesheet" href="../asset/css/footer.css">
-
 </head>
 <body>
     <!-- Navbar -->
@@ -36,9 +39,16 @@
                         </li>
                     </ul>
                     <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link" href="login.php">Login / Register</a>
-                        </li>
+                        <!-- Check if user is logged in -->
+                        <?php if(isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true): ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="logout.php">Logout</a>
+                            </li>
+                        <?php else: ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="login.php">Login / Register</a>
+                            </li>
+                        <?php endif; ?>
                     </ul>
                 </div>
             </div>
@@ -47,35 +57,7 @@
 
 <!-- Apa Itu Thalassemia Section -->
 <section class="py-5 text-center">
-    <div class="container">
-        <h2 style="color: #757375;">Apa itu <span style="color: #d62268;">Yayasan Thalassemia</span>?</h2>
-        <p class="lead" style="color: #757375;">
-        Yayasan Thalassemia adalah organisasi yang dibentuk untuk mendukung pasien thalassemia, sebuah penyakit genetik yang mempengaruhi kemampuan tubuh untuk memproduksi hemoglobin dengan normal. Yayasan ini bertujuan untuk memberikan edukasi, informasi, dan layanan dukungan kepada pasien dan keluarga mereka, serta meningkatkan kesadaran masyarakat tentang thalassemia.
-        </p>
-    </div>
-
-</section>
-
-<!-- About Us Section -->
-<section class="about-us py-5">
-    <div class="container" style="color: #757375;">
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <img src="../asset/image/thalassemia.jpg" alt="About Us" class="img-fluid rounded">
-            </div>
-            <div class="col-md-6">
-            <a class="navbar-brand large-text" style="color: #757375;">Yayasan</a>
-            <a class="navbar-brand large-text" style="color: #d62268;">Thalassemia Banyumas</a>
-            <p class="text-justify" style="text-align: justify;">
-            Yayasan Thalassemia Banyumas adalah sebuah organisasi nirlaba yang didirikan untuk memberikan dukungan dan informasi kepada pasien thalassemia serta keluarganya di daerah Banyumas. Yayasan ini berfokus pada peningkatan kesadaran tentang thalassemia, sebuah penyakit genetik yang mempengaruhi produksi hemoglobin, dan menyediakan berbagai layanan, termasuk konsultasi medis, pendidikan tentang manajemen penyakit, serta dukungan psikologis
-</p>
-<p class="text-justify" style="text-align: justify;">Melalui program-programnya, Yayasan Thalassemia Banyumas berupaya membantu pasien menjalani kehidupan yang lebih baik dan berdaya, serta mendorong upaya pencegahan melalui pemeriksaan dan edukasi di masyarakat.
-</p>
-<a href="diagnosa.php" class="btn custom-btn btn-lg">Detesi Dini Thalassemia</a>
-
-</div>
-        </div>
-    </div>
+   //dibuat section untuk menampilkan jenis penyakit dari database
 </section>
 
 <style>

@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +13,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="../asset/css/index.css">
     <link rel="stylesheet" href="../asset/css/footer.css">
-
 </head>
 <body>
     <!-- Navbar -->
@@ -36,9 +39,16 @@
                         </li>
                     </ul>
                     <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a class="nav-link" href="login.php">Login / Register</a>
-                        </li>
+                        <!-- Check if user is logged in -->
+                        <?php if(isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true): ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="logout.php">Logout</a>
+                            </li>
+                        <?php else: ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="login.php">Login / Register</a>
+                            </li>
+                        <?php endif; ?>
                     </ul>
                 </div>
             </div>
@@ -49,34 +59,42 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <!-- Card to create a box around the form -->
                 <div class="card p-4 shadow">
                     <h2 class="text-center" style="color: #d62268;">Selamat Datang</h2>
                     <p class="text-center">Silahkan masukan email & password</p>
                     <br>
-                    <form>
+                    <?php if (isset($error)) { echo "<p class='text-danger'>$error</p>"; } ?>
+                    <form method="POST" action="../handler/aturanloginuser.php">
                         <div class="mb-3">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                                <input type="email" class="form-control" name="email" placeholder="Enter your email" required>
                             </div>
                         </div>
                         <div class="mb-3">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                                <input type="password" class="form-control" name="password" placeholder="Enter your password" required>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary w-100" style="background-color: #d62268;">Login</button>
                     </form>
+                     <!-- Display error message if set -->
+                     <?php if (!empty($error)): ?>
+                            <div class="alert alert-danger mt-3">
+                                <?php echo $error; ?>
+                            </div>
+                        <?php endif; ?>
+
                     <div class="text-center mt-3">
-                        <a href="register.php" class="text-decoration-none" style="color: #d62268;">Don't have an account? Register here</a>
+                        <a href="register.php" class="text-decoration-none" style="color: #d62268;">Don't have an account? Register here</a><br>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
 
 <style>
     .login-section {
