@@ -1,0 +1,99 @@
+.hero {
+    position: relative; /* Agar elemen pseudo dapat ditempatkan dengan baik */
+    height: 100vh;
+    overflow: hidden; /* Mencegah overflow */
+}
+
+.hero::before {
+    content: ""; /* Membuat elemen pseudo */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('../image/index.jpg') no-repeat center center/cover; /* Gambar latar belakang */
+    filter: blur(8px); /* Tingkat blur */
+    opacity: 0.2; /* Atur transparansi untuk gelap (0.7 membuatnya lebih gelap) */
+    z-index: 1; /* Agar overlay berada di belakang konten */
+}
+
+.hero .dark-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Warna hitam dengan transparansi */
+    z-index: 2; /* Agar overlay warna di atas gambar */
+}
+
+.container {
+    position: relative; /* Konten akan berada di atas elemen pseudo */
+    z-index: 3; /* Konten tetap terlihat */
+    color: white; /* Mengubah warna teks jika perlu */
+}
+
+.hero .container {
+    position: relative;
+    z-index: 2;
+}
+
+.navbar-brand {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.navbar-brand span {
+    color: #d62268;
+}
+
+.custom-btn {
+    background-color: #d62268; /* Warna latar belakang tombol */
+    color: white; /* Warna teks menjadi putih */
+    border-radius: 50px; /* Bentuk oval */
+    border: none; /* Menghapus border default */
+    padding: 10px 30px; /* Padding untuk proporsi yang baik */
+    font-weight: bold; /* Menebalkan teks */
+}
+
+.custom-btn:hover {
+    background-color: #c2185b; /* Warna sedikit lebih gelap saat di-hover */
+    color: white; /* Teks tetap putih */
+}
+
+.large-text {
+    font-size: 3em; /* Atur ukuran huruf sesuai kebutuhan */
+}
+
+.welcome-text {
+    font-size: 1.5rem; /* Ukuran font yang lebih besar */
+    font-weight: bold; /* Teks tebal */
+    color: #ffffff; /* Warna putih */
+    text-transform: uppercase; /* Mengubah teks menjadi huruf besar */
+    margin-bottom: 1rem; /* Jarak bawah untuk pemisahan */
+}
+.btn-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 5px;
+    color: white;
+    text-decoration: none;
+}
+
+.scroll-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #d62268;
+    color: white;
+    border-radius: 50%;
+    padding: 10px;
+    font-size: 24px;
+    text-align: center;
+    z-index: 1000;
+    display: none;
+}
