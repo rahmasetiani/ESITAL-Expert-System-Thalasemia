@@ -26,10 +26,10 @@ session_start();
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link active" href="../index.php">Home</a>
+                            <a class="nav-link" href="../index.php">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="tentang.php">Tentang</a>
+                            <a class="nav-link active" href="tentang.php">Tentang</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="informasi.php">Informasi</a>

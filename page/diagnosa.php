@@ -26,7 +26,7 @@ session_start();
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link active" href="../index.php">Home</a>
+                            <a class="nav-link" href="../index.php">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="tentang.php">Tentang</a>
@@ -35,7 +35,7 @@ session_start();
                             <a class="nav-link" href="informasi.php">Informasi</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="diagnosa.php">Diagnosa</a>
+                            <a class="nav-link active" href="diagnosa.php">Diagnosa</a>
                         </li>
                     </ul>
                     <ul class="navbar-nav">
