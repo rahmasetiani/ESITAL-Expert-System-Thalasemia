@@ -45,3 +45,17 @@ function searchUser() {
     window.location.search = urlParams.toString();
 }
 
+
+//halpenyakit
+function changeLimit(limit) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('limit', limit);
+    window.location.href = url.toString();
+}
+
+function searchPenyakit() {
+    const query = document.getElementById('searchInput').value;
+    const url = new URL(window.location.href);
+    url.searchParams.set('search', query);
+    window.location.href = url.toString();
+}
