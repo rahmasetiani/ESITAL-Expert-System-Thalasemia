@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     if ($user['role'] == 0) {
                         header("Location: ../page/diagnosa.php"); // Regular user
                     } elseif ($user['role'] == 1) {
-                        header("Location: ../admin/dashboard.php"); // Admin
+                        header("Location: ../admin/z-dashboard.php"); // Admin
                     } elseif ($user['role'] == 2) {
                         header("Location: ../admin/pakar/dashboard.php"); // Expert, if you have an expert dashboard
                     }

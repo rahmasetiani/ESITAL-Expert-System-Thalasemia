@@ -1,0 +1,87 @@
+body {
+    display: flex;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden; /* Prevent scroll bars */
+}
+.icon-buttons {
+position: absolute;
+bottom: 80px; /* Adjust this value to move buttons higher or lower */
+left: 0;
+right: 0;
+display: flex;
+justify-content: center; /* Center the buttons */
+}
+
+#sidebar {
+    width: 250px; /* Sidebar width */
+    background-color: #343a40;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    transition: all 0.3s;
+    z-index: 1000;
+}
+#sidebar.collapsed {
+    width: 60px; /* Width when collapsed */
+}
+#sidebar .nav-link {
+    color: #d9d9d9;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Align items to the start */
+    padding-left: 20px; /* Add left padding for better spacing */
+}
+#sidebar .nav-link:hover {
+    background-color: #575757;
+}
+#sidebar.collapsed .nav-text {
+    display: none; /* Hide text when collapsed */
+}
+#sidebar .sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+#toggleCollapse, #toggleExpand {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    background-color: transparent; /* No background for icon buttons */
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: 60px; /* Width for icon button */
+}
+#toggleExpand {
+    display: none; /* Hide expand button initially */
+}
+#content {
+    margin-left: 250px; /* Content margin to accommodate sidebar */
+    padding: 20px;
+    transition: margin-left 0.3s;
+    width: calc(100% - 250px);
+    overflow-y: auto; /* Allow scrolling */
+}
+#content.collapsed {
+    margin-left: 60px; /* Adjust content margin when sidebar is collapsed */
+    width: calc(100% - 60px);
+}
+@media (max-width: 768px) {
+    #sidebar {
+        margin-left: -250px; /* Hide sidebar */
+        transition: margin-left 0.3s;
+    }
+    #sidebar.collapsed {
+        margin-left: 0; /* Show sidebar when toggled */
+    }
+    #content {
+        margin-left: 0; /* Full width for mobile */
+        width: 100%; /* Full width for mobile */
+    }
+}

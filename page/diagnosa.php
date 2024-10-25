@@ -140,15 +140,17 @@ session_start();
         <!-- Login Prompt Section -->
         <section class="py-5 text-center" id="belum-login">
             <div class="container">
-                <br><br><br>
+                <br><br><br><br><br><br><br><br><br>
                 <h2 class="navbar-brand" style="color: #d62268;">Mohon Maaf ... </h2>
                 <h2 style="color: #757375;">Anda Perlu Login Terlebih Dahulu !</h2>
                 <p class="lead" style="color: #757375;">
                     Sebelum melanjutkan, silakan lakukan login untuk mengakses informasi dan layanan lebih lanjut. 
                     Dengan login, Anda akan mendapatkan dukungan terbaik dari kami dan akses ke sumber daya yang bermanfaat.
                 </p>
+                <br><br>
                 <a href="login.php" class="btn custom-btn btn-lg">Login/Register</a>
-                <br><br><br>
+
+                <br><br><br><br><br><br><br><br><br><br>
             </div>
         </section>
     <?php endif; ?>
