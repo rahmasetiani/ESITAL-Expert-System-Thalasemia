@@ -20,24 +20,8 @@ if ($row = mysqli_fetch_assoc($result)) {
     echo "User not found!";
 }
 
-// Pagination logic
-$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 5; // Default to 5 entries per page
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Get the current page number
-$offset = ($page - 1) * $limit; // Calculate the offset
+include '../handler/pagination.php'; // Manage pagination and user listing
 
-// Get search query if exists
-$searchQuery = isset($_GET['search']) ? trim($_GET['search']) : '';
-
-// Query for the total number of users with optional search
-$totalUsersQuery = "SELECT COUNT(*) as total FROM user WHERE namalengkap LIKE '%$searchQuery%'";
-$totalResult = mysqli_query($conn, $totalUsersQuery);
-$totalRow = mysqli_fetch_assoc($totalResult);
-$totalUsers = $totalRow['total'];
-$totalPages = ceil($totalUsers / $limit); // Calculate total pages
-
-// Query for getting users with limit and offset
-$userQuery = "SELECT id, namalengkap, email, role FROM user WHERE namalengkap LIKE '%$searchQuery%' LIMIT $limit OFFSET $offset";
-$userResult = mysqli_query($conn, $userQuery);
 ?>
 
 <!DOCTYPE html>

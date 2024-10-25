@@ -8,6 +8,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $namalengkap = $conn->real_escape_string($_POST['namalengkap']);
     $email = $conn->real_escape_string($_POST['email']);
     $password = $conn->real_escape_string($_POST['password']);
+    $role = $conn->real_escape_string($_POST['role']);
+
     
     // Hash the password for security
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
