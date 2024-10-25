@@ -6,40 +6,7 @@ if (!isset($_SESSION['email'])) {
     header("Location: ../page/login.php");
     exit();
 }
-
-$email = $_SESSION['email'];
-$query = "SELECT namalengkap, role FROM user WHERE email = '$email'";
-$result = mysqli_query($conn, $query);
-
-if ($row = mysqli_fetch_assoc($result)) {
-    $_SESSION['namalengkap'] = $row['namalengkap'];
-    $_SESSION['role'] = $row['role'];
-} else {
-    echo "User not found!";
-}
-
-include '../handler/pagination.php'; // Pagination and listing logic
-// Query untuk mengambil data gejala
-$queryGejala = "SELECT kodegejala, namagejala, bobot FROM gejala LIMIT $limit OFFSET $offset";
-$gejalaResult = mysqli_query($conn, $queryGejala);
-
-// Cek apakah query berhasil
-if (!$gejalaResult) {
-    die("Error executing query: " . mysqli_error($conn));
-}
-
-// Ambil kode gejala terakhir
-$queryLastKode = "SELECT kodegejala FROM gejala ORDER BY kodegejala DESC LIMIT 1";
-$resultLastKode = mysqli_query($conn, $queryLastKode);
-
-if ($row = mysqli_fetch_assoc($resultLastKode)) {
-    $lastKode = (int) substr($row['kodegejala'], 1); // Mengambil angka setelah 'G'
-    $nextKodeGejala = $lastKode + 1;
-} else {
-    $nextKodeGejala = 1; // Jika belum ada data, mulai dari 1
-}
-
-
+include '../handler/gejala/pagination-gejala.php'; // Manage pagination and user listing
 ?>
 
 <!DOCTYPE html>
@@ -66,46 +33,61 @@ if ($row = mysqli_fetch_assoc($resultLastKode)) {
         </button>
     </div>
 
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <!-- Show Entries Section on the Left -->
+        <div class="d-flex align-items-center">
+            <label for="entriesSelect" class="me-2">Show</label>
+            <select id="entriesSelect" class="form-select w-auto" onchange="changeLimit(this.value)">
+                <option value="5" <?php if ($limit == 5) echo 'selected'; ?>>5</option>
+                <option value="10" <?php if ($limit == 10) echo 'selected'; ?>>10</option>
+                <option value="15" <?php if ($limit == 15) echo 'selected'; ?>>15</option>
+            </select>
+            <span class="ms-2 me-2">entries</span>
+        </div>
+
+        <!-- Search Gejala Section on the Right -->
+        <div class="d-flex align-items-center">
+            <label for="searchInput" class="me-2">Search</label>
+            <input type="text" class="form-control w-75 me-2" placeholder="Cari gejala..." id="searchInput" value="<?php echo htmlspecialchars($searchQuery); ?>" onkeypress="if(event.key === 'Enter') searchGejala()">
+        </div>
+    </div>
+
     <div class="container mt-4">
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>No</th>
-                    <th>Kode Gejala</th>
-                    <th>Nama Gejala</th>
-                    <th>Bobot</th>
-                    <th>Aksi</th>
+                    <th class="text-center">No</th>
+                    <th class="text-center">Kode Gejala</th>
+                    <th class="text-center">Nama Gejala</th>
+                    <th class="text-center">Bobot</th>
+                    <th class="text-center">Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                <?php if (mysqli_num_rows($gejalaResult) > 1): ?>
+                <?php if (mysqli_num_rows($gejalaResult) > 0): ?>
                     <?php $counter = $offset + 1; ?>
                     <?php while ($gejala = mysqli_fetch_assoc($gejalaResult)): ?>
                         <tr>
-                            <td><?php echo $counter++; ?></td>
-                            <td><?php echo $gejala['kodegejala']; ?></td>
-                            <td><?php echo $gejala['nama_gejala']; ?></td>
-                            <td><?php echo $gejala['bobot']; ?></td>
-                            <td>
-                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateModal-<?php echo $gejala['id']; ?>">Ubah</button>
-                                <a href="../handler/gejala/admin-hapusgejala.php?id=<?php echo $gejala['id']; ?>" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus gejala ini?');">Hapus</a>
+                            <td class="text-center"><?php echo $counter++; ?></td>
+                            <td class="text-center"><?php echo $gejala['kodegejala']; ?></td>
+                            <td class="text-center"><?php echo $gejala['namagejala']; ?></td>
+                            <td class="text-center"><?php echo $gejala['bobot']; ?></td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateModal-<?php echo $gejala['kodegejala']; ?>">Ubah</button>
+                                <a href="../handler/gejala/admin-hapusgejala.php?kodegejala=<?php echo $gejala['kodegejala']; ?>&limit=<?php echo $limit; ?>&page=<?php echo $page; ?>&search=<?php echo htmlspecialchars($searchQuery); ?>" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus gejala ini?');">Hapus</a>
                             </td>
                         </tr>
 
                         <!-- Update Modal -->
-                        <div class="modal fade" id="updateModal-<?php echo $gejala['id']; ?>" tabindex="-1" aria-hidden="true">
+                        <div class="modal fade" id="updateModal-<?php echo $gejala['kodegejala']; ?>" tabindex="-1" aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
-                                    <form method="POST" action="../handler/gejala/admin-ubahgejala.php">
+                                    <form method="POST" action="../handler/gejala/admin-ubahgejala.php?limit=<?php echo $limit; ?>&page=<?php echo $page; ?>&search=<?php echo htmlspecialchars($searchQuery); ?>">
                                         <div class="modal-body">
-                                            <input type="hidden" name="id" value="<?php echo $gejala['id']; ?>">
-                                            <div class="mb-3">
-                                                <label for="kodegejala" class="form-label">Kode Gejala</label>
-                                                <input type="text" class="form-control" name="kodegejala" value="<?php echo $gejala['kodegejala']; ?>" readonly>
-                                            </div>
+                                            <input type="hidden" name="kodegejala" value="<?php echo $gejala['kodegejala']; ?>">
                                             <div class="mb-3">
                                                 <label for="nama_gejala" class="form-label">Nama Gejala</label>
-                                                <input type="text" class="form-control" name="nama_gejala" value="<?php echo $gejala['nama_gejala']; ?>" required>
+                                                <input type="text" class="form-control" name="nama_gejala" value="<?php echo $gejala['namagejala']; ?>" required>
                                             </div>
                                             <div class="mb-3">
                                                 <label for="bobot" class="form-label">Bobot</label>
@@ -129,36 +111,67 @@ if ($row = mysqli_fetch_assoc($resultLastKode)) {
             </tbody>
         </table>
     </div>
-</div>
 
-<div class="modal fade" id="addGejalaModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form method="POST" action="../handler/gejala/admin-tambahgejala.php">
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="kodegejala" class="form-label">Kode Gejala</label>
-                        <input type="text" class="form-control" name="kodegejala" value="G<?php echo sprintf('%03d', $nextKodeGejala); ?>" readonly>
+    <!-- Pagination Controls -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <li class="page-item <?php if ($page <= 1) echo 'disabled'; ?>">
+                <a class="page-link" href="?page=<?php echo max($page - 1, 1); ?>&limit=<?php echo $limit; ?>&search=<?php echo htmlspecialchars($searchQuery); ?>" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                <li class="page-item <?php if ($i == $page) echo 'active'; ?>">
+                    <a class="page-link" href="?page=<?php echo $i; ?>&limit=<?php echo $limit; ?>&search=<?php echo htmlspecialchars($searchQuery); ?>"><?php echo $i; ?></a>
+                </li>
+            <?php endfor; ?>
+            <li class="page-item <?php if ($page >= $totalPages) echo 'disabled'; ?>">
+                <a class="page-link" href="?page=<?php echo min($page + 1, $totalPages); ?>&limit=<?php echo $limit; ?>&search=<?php echo htmlspecialchars($searchQuery); ?>" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Add Gejala Modal -->
+    <div class="modal fade" id="addGejalaModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST" action="../handler/gejala/admin-tambahgejala.php?limit=<?php echo $limit; ?>&page=<?php echo $page; ?>&search=<?php echo htmlspecialchars($searchQuery); ?>">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="nama_gejala" class="form-label">Nama Gejala</label>
+                            <input type="text" class="form-control" name="nama_gejala" required>
                         </div>
-                    <div class="mb-3">
-                        <label for="nama_gejala" class="form-label">Nama Gejala</label>
-                        <input type="text" class="form-control" name="nama_gejala" required>
+                        <div class="mb-3">
+                            <label for="bobot" class="form-label">Bobot</label>
+                            <input type="number" class="form-control" name="bobot" required>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="bobot" class="form-label">Bobot</label>
-                        <input type="number" class="form-control" name="bobot" required>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" name="add_gejala" class="btn btn-primary">Tambah Gejala</button>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" name="add_gejala" class="btn btn-primary">Tambah Gejala</button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
+
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="../asset/js/admin.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<script>
+    function changeLimit(limit) {
+        const search = document.getElementById('searchInput').value;
+        window.location.href = `?limit=${limit}&page=1&search=${encodeURIComponent(search)}`;
+    }
+
+    function searchGejala() {
+        const search = document.getElementById('searchInput').value;
+        window.location.href = `?limit=<?php echo $limit; ?>&page=1&search=${encodeURIComponent(search)}`;
+    }
+</script>
+
 </body>
 </html>
