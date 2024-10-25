@@ -160,21 +160,9 @@ include '../handler/gejala/pagination-gejala.php'; // Manage pagination and user
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-<script>
-    function changeLimit(limit) {
-        const search = document.getElementById('searchInput').value;
-        window.location.href = `?limit=${limit}&page=1&search=${encodeURIComponent(search)}`;
-    }
-
-    function searchGejala() {
-        const search = document.getElementById('searchInput').value;
-        window.location.href = `?limit=<?php echo $limit; ?>&page=1&search=${encodeURIComponent(search)}`;
-    }
-</script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script> -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../asset/js/admin.js"></script>
-
 
 </body>
 </html>

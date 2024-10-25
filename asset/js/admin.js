@@ -59,3 +59,14 @@ function searchPenyakit() {
     url.searchParams.set('search', query);
     window.location.href = url.toString();
 }
+
+//halgejala
+function changeLimit(limit) {
+    const search = document.getElementById('searchInput').value;
+    window.location.href = `?limit=${limit}&page=1&search=${encodeURIComponent(search)}`;
+}
+
+function searchGejala() {
+    const search = document.getElementById('searchInput').value;
+    window.location.href = `?limit=<?php echo $limit; ?>&page=1&search=${encodeURIComponent(search)}`;
+}
