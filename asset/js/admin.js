@@ -70,3 +70,17 @@ function searchGejala() {
     const search = document.getElementById('searchInput').value;
     window.location.href = `?limit=<?php echo $limit; ?>&page=1&search=${encodeURIComponent(search)}`;
 }
+
+    function changeLimit(limit) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('limit', limit);
+        window.location.href = url.toString();
+    }
+
+    function searchBasisKasus() {
+        const searchValue = document.getElementById('searchInput').value;
+        const url = new URL(window.location.href);
+        url.searchParams.set('search', searchValue);
+        url.searchParams.set('page', 1); // Reset to first page on new search
+        window.location.href = url.toString();
+    }
