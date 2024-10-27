@@ -74,8 +74,7 @@ session_start();
                 <img src="../asset/image/thalassemia.jpg" alt="About Us" class="img-fluid rounded">
             </div>
             <div class="col-md-6">
-            <a class="navbar-brand large-text" style="color: #757375;">Yayasan</a>
-            <a class="navbar-brand large-text" style="color: #d62268;">Thalassemia Banyumas</a>
+            <h1 style="color: #757375;">Yayasan <span style="color: #d62268;">Thalassemia Banyumas </span>?</h1>
             <p class="text-justify" style="text-align: justify;">
             Yayasan Thalassemia Banyumas adalah sebuah organisasi nirlaba yang didirikan untuk memberikan dukungan dan informasi kepada pasien thalassemia serta keluarganya di daerah Banyumas. Yayasan ini berfokus pada peningkatan kesadaran tentang thalassemia, sebuah penyakit genetik yang mempengaruhi produksi hemoglobin, dan menyediakan berbagai layanan, termasuk konsultasi medis, pendidikan tentang manajemen penyakit, serta dukungan psikologis
 </p>
