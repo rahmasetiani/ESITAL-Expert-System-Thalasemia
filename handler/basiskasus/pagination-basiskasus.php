@@ -1,7 +1,6 @@
 <?php
 require '../database/koneksi.php';
 
-
 // Set default values for pagination and search
 $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 5;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -9,6 +8,9 @@ $searchQuery = isset($_GET['search']) ? $_GET['search'] : '';
 
 // Calculate the offset for pagination
 $offset = ($page - 1) * $limit;
+
+// Calculate the starting number for each page
+$startNumber = $offset + 1;
 
 // Query to fetch basis kasus and related penyakit with search functionality
 $query = "SELECT b.kodebasiskasus, b.kodepenyakit, p.namapenyakit 

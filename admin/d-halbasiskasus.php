@@ -116,8 +116,9 @@ include '../handler/basiskasus/pagination-basiskasus.php'; // Manage pagination 
         </tr>
     </thead>
     <tbody>
-        <?php $counter = 1; while ($row = mysqli_fetch_assoc($basiskasusResult)): ?>
-            <tr>
+    <?php $counter = $startNumber; while ($row = mysqli_fetch_assoc($basiskasusResult)): ?>
+
+        <tr>
                 <td class="text-center"><?php echo $counter++; ?></td>
                 <td class="text-center"><?php echo htmlspecialchars($row['kodebasiskasus']); ?></td>
                 <td class="text-center"><?php echo htmlspecialchars($row['namapenyakit']); ?></td>
@@ -215,7 +216,7 @@ include '../handler/basiskasus/pagination-basiskasus.php'; // Manage pagination 
         <?php endwhile; ?>
     </tbody>
 </table>
-            <!-- Pagination Controls -->
+           <!-- Pagination Controls -->
     <nav aria-label="Page navigation">
         <ul class="pagination justify-content-center">
             <li class="page-item <?php if ($page <= 1) echo 'disabled'; ?>">
