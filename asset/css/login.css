@@ -1,0 +1,13 @@
+.login-section {
+    background-color: #f8f9fa;
+    padding: 60px 0;
+}
+.card {
+    border-radius: 8px;
+    border: none;
+}
+.input-group-text {
+    background-color: #d62268;
+    color: white;
+}
+
