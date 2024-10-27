@@ -64,7 +64,7 @@ session_start();
                     <p class="text-center">Silahkan masukan email & password</p>
                     <br>
                     <?php if (isset($error)) { echo "<p class='text-danger'>$error</p>"; } ?>
-                    <form method="POST" action="../handler/aturanloginuser.php">
+                    <form method="POST" action="../handler/user/aturanloginuser.php">
                         <div class="mb-3">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-envelope"></i></span>

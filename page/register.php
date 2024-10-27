@@ -64,7 +64,7 @@ session_start();
                     <h2 class="text-center" style="color: #d62268;">Buat Akun</h2>
                     <p class="text-center">Silahkan masukan data pribadi untuk membuat akun</p>
                     <br>
-                    <form action="../handler/tambahuser.php" method="POST">
+                    <form action="../handler/user/tambahuser.php" method="POST">
                         <div class="mb-3">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-user"></i></span>

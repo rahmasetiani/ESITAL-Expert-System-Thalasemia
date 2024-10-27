@@ -3,8 +3,7 @@ session_start();
 require '../database/koneksi.php';
 
 // Fetch data from the penyakit table
-$query = "SELECT * FROM penyakit";
-$result = mysqli_query($conn, $query);
+include '../handler/penyakit/get_penyakit.php';
 ?>
 
 <!DOCTYPE html>
@@ -18,28 +17,8 @@ $result = mysqli_query($conn, $query);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="../asset/css/index.css">
     <link rel="stylesheet" href="../asset/css/footer.css">
-    <style>
-        .card-img-top {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-        .card {
-            margin-right: 10px; /* Add margin for spacing between cards */
-            display: flex; /* Ensure flex display for equal heights */
-            flex-direction: column; /* Align items vertically */
-        }
-        .card-body {
-            flex: 1; /* Allow the card body to grow */
-            display: flex;
-            flex-direction: column; /* Align text vertically */
-            justify-content: space-between; /* Space between text */
-        }
-        section {
-            background-color: #f8f9fa;
-            background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.05));
-        }
-    </style>
+    <link rel="stylesheet" href="../asset/css/info.css">
+    
 </head>
 <body>
     <!-- Navbar -->
@@ -163,59 +142,7 @@ $result = mysqli_query($conn, $query);
 
     <!-- Bootstrap JS and dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-    function setupShowMoreLess() {
-        // Show More functionality for descriptions
-        document.querySelectorAll('.show-more').forEach(function (link) {
-            link.addEventListener('click', function (event) {
-                event.preventDefault();
-                const cardText = link.parentElement;
-                const fullText = cardText.getAttribute('data-full-text');
-                cardText.innerHTML = fullText + '<br><a href="#" class="show-less">Show Less</a>';
-                setupShowLess(); // Set up the show less link again
-            });
-        });
-
-        // Show Less functionality for descriptions
-        function setupShowLess() {
-            document.querySelectorAll('.show-less').forEach(function (link) {
-                link.addEventListener('click', function (event) {
-                    event.preventDefault();
-                    const cardText = link.parentElement;
-                    const shortText = cardText.getAttribute('data-short-text');
-                    cardText.innerHTML = shortText + '...<br><a href="#" class="show-more">Show More</a>';
-                    setupShowMoreLess(); // Set up the show more link again
-                });
-            });
-        }
-
-        // Show More functionality for solutions
-        document.querySelectorAll('.show-more-solution').forEach(function (link) {
-            link.addEventListener('click', function (event) {
-                event.preventDefault();
-                const cardText = link.parentElement;
-                const fullText = cardText.getAttribute('data-full-text');
-                cardText.innerHTML = fullText + '<br><a href="#" class="show-less-solution">Show Less</a>';
-                setupShowLessSolution(); // Set up the show less solution again
-            });
-        });
-
-        // Show Less functionality for solutions
-        function setupShowLessSolution() {
-            document.querySelectorAll('.show-less-solution').forEach(function (link) {
-                link.addEventListener('click', function (event) {
-                    event.preventDefault();
-                    const cardText = link.parentElement;
-                    const shortText = cardText.getAttribute('data-short-text');
-                    cardText.innerHTML = shortText + '...<br><a href="#" class="show-more-solution">Show More</a>';
-                    setupShowMoreLess(); // Set up the show more solution again
-                });
-            });
-        }
-    }
-
-    setupShowMoreLess(); // Initialize the show more/less setup
-</script>
+    <script src="../asset/js/info.js"></script>
 
 </body>
 </html>

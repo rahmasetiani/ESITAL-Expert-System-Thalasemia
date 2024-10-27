@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once '../database/koneksi.php'; // Include your database connection file
+require_once '../../database/koneksi.php'; // Include your database connection file
 
 // Initialize an empty error variable
 $error = "";
@@ -33,24 +33,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     // Redirect based on user role
                     if ($user['role'] == 0) {
-                        header("Location: ../page/diagnosa.php"); // Regular user
+                        header("Location: ../../page/diagnosa.php"); // Regular user
                     } elseif ($user['role'] == 1) {
-                        header("Location: ../admin/z-dashboard.php"); // Admin
+                        header("Location: ../../admin/z-dashboard.php"); // Admin
                     } elseif ($user['role'] == 2) {
-                        header("Location: ../admin/pakar/dashboard.php"); // Expert, if you have an expert dashboard
+                        header("Location: ../../admin/pakar/dashboard.php"); // Expert, if you have an expert dashboard
                     }
                     exit();
                 } else {
                     // Incorrect password
-                    echo "<script>alert('Invalid password. Please try again.'); window.location.href='../page/login.php';</script>";
+                    echo "<script>alert('Invalid password. Please try again.'); window.location.href='../../page/login.php';</script>";
                 }
             } else {
                 // Email not found in database
-                echo "<script>alert('No account found with that email. Please check your email and try again.'); window.location.href='../page/login.php';</script>";
+                echo "<script>alert('No account found with that email. Please check your email and try again.'); window.location.href='../../page/login.php';</script>";
             }
         } else {
             // Error during database query
-            echo "<script>alert('Database query error. Please try again later.'); window.location.href='../page/login.php';</script>";
+            echo "<script>alert('Database query error. Please try again later.'); window.location.href='../../page/login.php';</script>";
         }
     }
 }

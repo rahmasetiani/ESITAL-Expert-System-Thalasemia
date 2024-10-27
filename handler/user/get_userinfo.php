@@ -1,6 +1,6 @@
 <?php
 session_start();
-require '../database/koneksi.php';
+require '../../database/koneksi.php';
 
 if (!isset($_SESSION['email'])) {
     header("Location: ../page/login.php");
