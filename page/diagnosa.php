@@ -4,7 +4,7 @@ require '../database/koneksi.php'; // Pastikan koneksi database sudah benar
 
 // Memasukkan file handler untuk mengambil gejala dan proses awal
 include '../handler/gejala/get_gejala.php';
-include '../handler/proses_cbr/prosesawal.php';
+include '../handler/diagnosa/prosesawal.php';
 ?>
 
 <!-- Header (gunakan include untuk memisah header) -->
@@ -83,7 +83,7 @@ include '../handler/proses_cbr/prosesawal.php';
                     
                     <!-- Back Button -->
                     <div class="d-flex justify-content-start mt-4">
-                        <button type="submit" name="back" class="btn btn-secondary me-2" style="margin-left: auto;">Kembali</button>
+                        <button type="submit" name="back" class="btn btn-secondary me-2" style="margin-right: auto;">Kembali</button>
                     </div>
 
                     <!-- Next Button -->

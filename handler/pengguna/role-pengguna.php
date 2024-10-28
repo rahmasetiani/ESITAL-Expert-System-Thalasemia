@@ -29,6 +29,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if (password_verify($password, $user['password'])) {
                     // Store session data
                     $_SESSION['email'] = $user['email'];
+                    $_SESSION['user_id'] = $user['id']; // Simpan iduser ke dalam sesi
                     $_SESSION['logged_in'] = true;
 
                     // Redirect based on user role
