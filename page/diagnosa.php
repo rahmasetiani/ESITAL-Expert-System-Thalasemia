@@ -13,33 +13,33 @@ include '../handler/diagnosa/prosesawal.php';
 <?php if(isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true): ?>
     <!-- Form Section -->
     <section class="py-5 text-center" id="form-section">
-        <div class="container" style="max-width: 800px; margin: auto;">
+        <div class="container" style="max-width: 800px;"> <!-- Set max-width to 800px -->
             <?php if ($_SESSION['form_step'] == 1): ?>
-                <h2 class="navbar-brand large-text" style="color: #d62268; margin-bottom: 1rem;">Deteksi Dini Thalassemia</h2>
+                <h2 class="navbar-brand large-text" style="color: #d62268; margin-bottom: 1rem; text-shadow: 1px 1px 3px rgba(0,0,0,0.2);">Deteksi Dini Thalassemia</h2>
                 <h3 style="color: #757375; margin-bottom: 2rem;">Masukan Data Diri Anda</h3>
                 <form method="POST">
                     <div class="mb-4 row text-start">
                         <label for="nama" class="col-sm-4 col-form-label" style="color: #000;">Masukkan Nama</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="nama" name="nama" required>
+                            <input type="text" class="form-control" id="nama" name="nama" required style="box-shadow: 0px 4px 8px rgba(0,0,0,0.1);">
                         </div>
                     </div>
                     <div class="mb-4 row text-start">
                         <label for="tanggal_lahir" class="col-sm-4 col-form-label" style="color: #000;">Masukkan Tanggal Lahir</label>
                         <div class="col-sm-8">
-                            <input type="date" class="form-control" id="tanggal_lahir" name="tanggal_lahir" required>
+                            <input type="date" class="form-control" id="tanggal_lahir" name="tanggal_lahir" required style="box-shadow: 0px 4px 8px rgba(0,0,0,0.1);">
                         </div>
                     </div>
                     <div class="mb-4 row text-start">
                         <label for="alamat" class="col-sm-4 col-form-label" style="color: #000;">Alamat</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="alamat" name="alamat" required>
+                            <input type="text" class="form-control" id="alamat" name="alamat" required style="box-shadow: 0px 4px 8px rgba(0,0,0,0.1);">
                         </div>
                     </div>
                     <div class="mb-4 row text-start">
                         <label for="jenis_kelamin" class="col-sm-4 col-form-label" style="color: #000;">Jenis Kelamin</label>
                         <div class="col-sm-8">
-                            <select class="form-select" id="jenis_kelamin" name="jenis_kelamin" required>
+                            <select class="form-select" id="jenis_kelamin" name="jenis_kelamin" required style="box-shadow: 0px 4px 8px rgba(0,0,0,0.1);">
                                 <option value="" disabled selected>Pilih Jenis Kelamin</option>
                                 <option value="Laki-laki">Laki-laki</option>
                                 <option value="Perempuan">Perempuan</option>
@@ -51,29 +51,36 @@ include '../handler/diagnosa/prosesawal.php';
                     </div>
                 </form>
             <?php elseif ($_SESSION['form_step'] == 2): ?>
-                <h2 class="navbar-brand large-text" style="color: #d62268; margin-bottom: 1rem;">Deteksi Dini Thalassemia</h2>
+                <h2 class="navbar-brand large-text" style="color: #d62268; margin-bottom: 1rem; text-shadow: 1px 1px 3px rgba(0,0,0,0.2);">Deteksi Dini Thalassemia</h2>
                 <h3 style="color: #757375; margin-bottom: 2rem;">Masukan Gejala yang Sedang Anda Alami</h3>
                 <form method="POST">
-                    <table class="symptom-table">
-                        <tr>
-                            <?php
-                            $index = 0;
-                            foreach ($symptoms as $row) {
-                                if ($index % 2 == 0 && $index != 0) echo '</tr><tr>'; // Mulai baris baru setiap 2 sel
-
-                                echo '<td class="symptom-cell">
-                                        <div class="symptom-checkbox" style="margin-bottom: 1rem;">
-                                            <input class="form-check-input" type="checkbox" name="gejala[]" id="' . $row['kodegejala'] . '" value="' . $row['kodegejala'] . '" style="width: 1.2em; height: 1.2em;">
-                                            <label for="' . $row['kodegejala'] . '">(' . $row['kodegejala'] . ') ' . $row['namagejala'] . '</label>
-                                        </div>
-                                      </td>';
-
-                                $index++;
-                            }
-                            if ($index % 2 != 0) echo '<td class="symptom-cell"></td>'; // Isi baris terakhir jika ganjil
-                            ?>
-                        </tr>
-                    </table>
+                    <!-- Table to display gejala -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered" style="border-collapse: collapse; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                            <thead style="background-color: #d62268; color: white; text-shadow: 1px 1px 5px rgba(0,0,0,0.3);">
+                                <tr>
+                                    <th style="width: 120px; padding: 8px; text-align: center;">Kode Gejala</th>
+                                    <th style="padding: 8px; text-align: center;">Nama Gejala</th>
+                                    <th style="width: 100px; padding: 8px; text-align: center;">Checklist</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $index = 0;
+                                foreach ($symptoms as $row) {
+                                    echo '<tr style="background-color: #f9f9f9; border-bottom: 1px solid #ddd;">
+                                            <td style="text-align: center; padding: 8px; font-weight: bold; color: #555;">' . $row['kodegejala'] . '</td>
+                                            <td style="padding: 8px; color: #333;">' . $row['namagejala'] . '</td>
+                                            <td style="text-align: center; padding: 8px;">
+                                                <input class="form-check-input" type="checkbox" name="gejala[]" value="' . $row['kodegejala'] . '" style="width: 1.5em; height: 1.5em;">
+                                            </td>
+                                          </tr>';
+                                    $index++;
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
                     <br>
                     <?php if (!empty($error_message)): ?>
                         <script>
@@ -96,7 +103,7 @@ include '../handler/diagnosa/prosesawal.php';
     </section>
 <?php else: ?>
     <section class="py-5 text-center" id="belum-login">
-        <div class="container">
+        <div class="container" style="max-width: 800px;"> <!-- Set max-width to 800px -->
             <br><br><br><br><br><br>
             <h2 class="navbar-brand" style="color: #d62268;">Mohon Maaf ... </h2>
             <h2 style="color: #757375;">Anda Perlu Login Terlebih Dahulu!</h2>

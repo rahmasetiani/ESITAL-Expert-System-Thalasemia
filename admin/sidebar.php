@@ -21,37 +21,50 @@
     <br>
     <br>
     <nav class="nav flex-column">
-        <div class="nav-item">
-            <a href="a-halpengguna.php" class="nav-link">
-                <i class="bi bi-person-fill me-2"></i>
-                <span class="nav-text">Data Pengguna</span>
-            </a>
-        </div>
-        <div class="nav-item">
-            <a href="b-halpenyakit.php" class="nav-link">
-                <i class="bi bi-heart-fill me-2"></i>
-                <span class="nav-text">Data Penyakit</span>
-            </a>
-        </div>
-        <div class="nav-item">
-            <a href="c-halgejala.php" class="nav-link">
-                <i class="bi bi-emoji-smile-fill me-2"></i>
-                <span class="nav-text">Data Gejala</span>
-            </a>
-        </div>
-        <div class="nav-item">
-            <a href="d-halbasiskasus.php" class="nav-link">
-                <i class="bi bi-file-earmark-text-fill me-2"></i>
-                <span class="nav-text">Basis Kasus</span>
-            </a>
-        </div>
-        <div class="nav-item">
-            <a href="e-halriwayatpasien.php" class="nav-link">
-                <i class="bi bi-file-earmark-text-fill me-2"></i>
-                <span class="nav-text">Riwayat Deteksi</span>
-            </a>
-        </div>
-    </nav>
+    <div class="nav-item">
+        <a href="z-dashboard.php" class="nav-link">
+            <i class="bi bi-house-door-fill me-2"></i>
+            <span class="nav-text">Dashboard</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="a-halpengguna.php" class="nav-link">
+            <i class="bi bi-person-fill me-2"></i>
+            <span class="nav-text">Data Pengguna</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="b-halpenyakit.php" class="nav-link">
+            <i class="bi bi-heart-fill me-2"></i>
+            <span class="nav-text">Data Penyakit</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="c-halgejala.php" class="nav-link">
+            <i class="bi bi-emoji-smile-fill me-2"></i>
+            <span class="nav-text">Data Gejala</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="d-halbasiskasus.php" class="nav-link">
+            <i class="bi bi-file-earmark-fill me-2"></i>
+            <span class="nav-text">Basis Kasus</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="e-halambangbatas.php" class="nav-link">
+            <i class="bi bi-clipboard-fill me-2"></i>
+            <span class="nav-text">Ambang Batas</span>
+        </a>
+    </div>
+    <div class="nav-item">
+        <a href="f-halriwayatpasien.php" class="nav-link">
+            <i class="bi bi-clock-history me-2"></i>
+            <span class="nav-text">Riwayat Deteksi</span>
+        </a>
+    </div>
+</nav>
+
     <!-- Icon Buttons -->
     <div class="icon-buttons">
         <button id="toggleCollapse" class="btn" title="Collapse Sidebar">
