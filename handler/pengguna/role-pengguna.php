@@ -30,6 +30,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     // Store session data
                     $_SESSION['email'] = $user['email'];
                     $_SESSION['user_id'] = $user['id']; // Simpan iduser ke dalam sesi
+                    $_SESSION['namalengkap'] = $user['namalengkap']; // Pastikan kolom ini ada di tabel users
                     $_SESSION['logged_in'] = true;
 
                     // Redirect based on user role

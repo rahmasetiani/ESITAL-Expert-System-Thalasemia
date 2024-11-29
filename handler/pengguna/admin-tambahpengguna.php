@@ -2,37 +2,50 @@
 session_start();
 require '../../database/koneksi.php'; // File koneksi database
 
-// Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Sanitize and get form data
-    $namalengkap = $conn->real_escape_string($_POST['namalengkap']);
-    $email = $conn->real_escape_string($_POST['email']);
-    $password = $conn->real_escape_string($_POST['password']);
-    $role = $conn->real_escape_string($_POST['role']);
+    $namalengkap = trim($_POST['namalengkap']);
+    $email = trim($_POST['email']);
+    $password = trim($_POST['password']);
+    $tanggal_lahir = trim($_POST['tanggal_lahir']);
+    $jenis_kelamin = trim($_POST['jenis_kelamin']);
+    $alamat = trim($_POST['alamat']);
+    $role = isset($_POST['role']) ? intval($_POST['role']) : 0; // Default role: Pasien
 
-    
-    // Hash the password for security
+    // Validasi input
+    if (empty($namalengkap) || empty($email) || empty($password) || empty($tanggal_lahir) || empty($jenis_kelamin) || empty($alamat)) {
+        echo "<script>alert('Semua field harus diisi!'); window.location.href='../../admin/a-halpengguna.php';</script>";
+        exit();
+    }
+
+    // Hash password
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-    // Check if email already exists
-    $check_email = "SELECT * FROM user WHERE email = '$email'";
-    $result = $conn->query($check_email);
+    // Check if email already exists using prepared statement
+    $check_email_stmt = $conn->prepare("SELECT * FROM user WHERE email = ?");
+    $check_email_stmt->bind_param("s", $email);
+    $check_email_stmt->execute();
+    $result = $check_email_stmt->get_result();
 
     if ($result->num_rows > 0) {
         // Email already exists
-        echo "<script>alert('Email already registered. Please use another email.'); window.location.href='../../admin/a-halpengguna.php';</script>";
+        echo "<script>alert('Email sudah terdaftar. Silakan gunakan email lain.'); window.location.href='../../admin/a-halpengguna.php';</script>";
     } else {
-        // Insert user data into the database, including role
-        $sql = "INSERT INTO user (namalengkap, email, password, role) VALUES ('$namalengkap', '$email', '$hashed_password', '$role')";
+        // Insert user data using prepared statement
+        $insert_stmt = $conn->prepare("INSERT INTO user (namalengkap, email, password, role, tanggal_lahir, jenis_kelamin, alamat) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $insert_stmt->bind_param("sssisss", $namalengkap, $email, $hashed_password, $role, $tanggal_lahir, $jenis_kelamin, $alamat);
 
-        if ($conn->query($sql) === TRUE) {
-            // Registration successful, redirect to the login page
-            echo "<script>alert('Registration successful! Please login.'); window.location.href='../../admin/a-halpengguna.php';</script>";
+        if ($insert_stmt->execute()) {
+            // Success
+            echo "<script>alert('Pendaftaran berhasil!'); window.location.href='../../admin/a-halpengguna.php';</script>";
         } else {
             // Error handling
-            echo "Error: " . $sql . "<br>" . $conn->error;
+            echo "<script>alert('Terjadi kesalahan saat menyimpan data.'); window.location.href='../../admin/a-halpengguna.php';</script>";
         }
+
+        $insert_stmt->close();
     }
+
+    $check_email_stmt->close();
 }
 
 // Close connection

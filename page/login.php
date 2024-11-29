@@ -1,7 +1,3 @@
-<?php
-session_start();
-?>
-
 <?php include 'header.php'; ?>
 
     
@@ -18,16 +14,16 @@ session_start();
                         <div class="mb-3">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                <input type="email" class="form-control" name="email" placeholder="Enter your email" required>
+                                <input type="email" class="form-control" name="email" placeholder="Masukan email" required>
                             </div>
                         </div>
                         <div class="mb-3">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                <input type="password" class="form-control" name="password" placeholder="Enter your password" required>
+                                <input type="password" class="form-control" name="password" placeholder="Masukan password" required>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100" style="background-color: #d62268;">Login</button>
+                        <button type="submit" class="btn btn-primary w-100" style="background-color: #d62268;">Masuk</button>
                     </form>
                      <!-- Display error message if set -->
                      <?php if (!empty($error)): ?>
@@ -37,7 +33,7 @@ session_start();
                         <?php endif; ?>
 
                     <div class="text-center mt-3">
-                        <a href="register.php" class="text-decoration-none" style="color: #d62268;">Don't have an account? Register here</a><br>
+                        <a href="register.php" class="text-decoration-none" style="color: #d62268;">Apakah kamu belum punya akun? Daftar Disini</a><br>
                     </div>
                 </div>
             </div>

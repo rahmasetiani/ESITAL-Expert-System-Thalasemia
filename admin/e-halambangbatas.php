@@ -58,12 +58,12 @@ include '../handler/ambangbatas/admin-ubahambangbatas.php';  // Include the logi
         <!-- Display the current threshold value in large font -->
         <div id="current_threshold" class="text-center">
             <h4>Nilai Ambang Batas saat ini:</h4>
-            <p class="threshold-display"><?php echo $current_threshold; ?>%</p>
+            <p class="threshold-display" style="color : #d62268;"><?php echo $current_threshold; ?>%</p>
         </div>
 
         <!-- Show the "Ubah" button to enable editing, inside a flex container for centering -->
         <div class="text-center">
-            <button id="ubah_button" class="btn btn-primary btn-custom" data-bs-toggle="modal" data-bs-target="#ubahModal">Ubah Nilai Ambang Batas</button>
+        <button id="ubah_button" class="btn btn-custom" style="background-color: #d62268; border-color: #d62268;color : #ffffff" data-bs-toggle="modal" data-bs-target="#ubahModal">Ubah Nilai Ambang Batas</button>
         </div>
     </div>
 
@@ -82,8 +82,8 @@ include '../handler/ambangbatas/admin-ubahambangbatas.php';  // Include the logi
                             <input type="number" class="form-control" id="nilai_ambang_batas" name="nilai_ambang_batas" value="<?php echo $current_threshold; ?>" min="0" max="100" step="0.01">
                         </div>
                         <div class="d-flex justify-content-center gap-3">
-                            <button type="submit" class="btn btn-success btn-custom">Kirim</button>
-                            <button type="button" class="btn btn-secondary btn-custom" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Kirim Ambang Batas</button>
                         </div>
                     </form>
                 </div>

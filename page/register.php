@@ -1,10 +1,6 @@
-<?php
-session_start();
-?>
-
 <?php include 'header.php'; ?>
 
-    <section class="login-section d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+<section class="login-section d-flex justify-content-center align-items-center" style="min-height: 100vh;">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-6">
@@ -17,25 +13,51 @@ session_start();
                         <div class="mb-3">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                <input type="text" class="form-control" id="namalengkap" name="namalengkap" placeholder="Enter your name" required>
+                                <input type="text" class="form-control" id="namalengkap" name="namalengkap" placeholder="Masukan nama" required>
                             </div>
                         </div>
                         <div class="mb-3">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" required>
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Masukan email" required>
                             </div>
                         </div>
                         <div class="mb-3">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Masukan password" required>
                             </div>
                         </div>
+                        
+                        <!-- New Fields -->
+                        <div class="mb-3">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                                <input type="date" class="form-control" id="tanggal_lahir" name="tanggal_lahir" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-venus-mars"></i></span>
+                                <select class="form-control" id="jenis_kelamin" name="jenis_kelamin" required>
+                                    <option value="" disabled selected>Pilih Jenis Kelamin</option>
+                                    <option value="Laki-laki">Laki-laki</option>
+                                    <option value="Perempuan">Perempuan</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-home"></i></span>
+                                <input type="text" class="form-control" id="alamat" name="alamat" placeholder="Masukan alamat" required>
+                            </div>
+                        </div>
+
                         <button type="submit" class="btn btn-primary w-100" style="background-color: #d62268;">Buat Akun</button>
                     </form>
+
                     <div class="text-center mt-3">
-                        <a href="login.php" class="text-decoration-none" style="color: #d62268;">Do you have an account? Login here</a>
+                        <a href="login.php" class="text-decoration-none" style="color: #d62268;">Apakah kamu sudah punya akun? Masuk disini</a>
                     </div>
                 </div>
             </div>

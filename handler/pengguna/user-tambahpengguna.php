@@ -8,6 +8,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $namalengkap = $conn->real_escape_string($_POST['namalengkap']);
     $email = $conn->real_escape_string($_POST['email']);
     $password = $conn->real_escape_string($_POST['password']);
+    $tanggal_lahir = $conn->real_escape_string($_POST['tanggal_lahir']);
+    $jenis_kelamin = $conn->real_escape_string($_POST['jenis_kelamin']);
+    $alamat = $conn->real_escape_string($_POST['alamat']);
     
     // Hash the password for security
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
@@ -23,8 +26,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Email already exists
         echo "<script>alert('Email already registered. Please use another email.'); window.location.href='../../page/register.php';</script>";
     } else {
-        // Insert user data into the database, including role
-        $sql = "INSERT INTO user (namalengkap, email, password, role) VALUES ('$namalengkap', '$email', '$hashed_password', '$role')";
+        // Insert user data into the database, including role, tanggal_lahir, jenis_kelamin, and alamat
+        $sql = "INSERT INTO user (namalengkap, email, password, role, tanggal_lahir, jenis_kelamin, alamat) 
+                VALUES ('$namalengkap', '$email', '$hashed_password', '$role', '$tanggal_lahir', '$jenis_kelamin', '$alamat')";
 
         if ($conn->query($sql) === TRUE) {
             // Registration successful, redirect to the login page

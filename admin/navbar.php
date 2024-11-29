@@ -18,7 +18,8 @@
                             <small><?php echo $_SESSION['email']; ?></small>
                         </li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="../page/logout.php">Log Out</a></li>
+                        <li><a class="dropdown-item" href="pengaturan.php">Pengaturan</a></li>
+                        <li><a class="dropdown-item" href="../page/logout.php">Keluar</a></li>
                     </ul>
                 </li>
                 <!-- Displaying Sidebar Menu Items Only on Small Screens -->

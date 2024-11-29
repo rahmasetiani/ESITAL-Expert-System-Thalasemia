@@ -10,20 +10,19 @@ $offset = ($page - 1) * $limit;
 $searchQuery = isset($_GET['search']) ? trim($_GET['search']) : '';
 
 // Get total number of users for pagination
-$totalUsersQuery = "SELECT COUNT(*) as total FROM user WHERE namalengkap LIKE '%$searchQuery%'";
+$totalUsersQuery = "SELECT COUNT(*) as total FROM user WHERE namalengkap LIKE '%$searchQuery%' OR email LIKE '%$searchQuery%' OR role LIKE '%$searchQuery%'";
 $totalResult = mysqli_query($conn, $totalUsersQuery);
 $totalRow = mysqli_fetch_assoc($totalResult);
 $totalUsers = $totalRow['total'];
 $totalPages = ceil($totalUsers / $limit);
 
 // Query for user list
-$userQuery = "SELECT id, namalengkap, email, role FROM user WHERE namalengkap LIKE '%$searchQuery%' LIMIT $limit OFFSET $offset";
+$userQuery = "SELECT * FROM user WHERE namalengkap LIKE '%$searchQuery%' OR email LIKE '%$searchQuery%' OR role LIKE '%$searchQuery%' LIMIT $limit OFFSET $offset";
 $userResult = mysqli_query($conn, $userQuery);
-
 
 // Ambil data nama lengkap dan role berdasarkan email dari session
 $email = $_SESSION['email'];
-$query = "SELECT namalengkap, role FROM user WHERE email = '$email'";
+$query = "SELECT namalengkap, role, tanggal_lahir, jenis_kelamin, alamat FROM user WHERE email = '$email'";
 $result = mysqli_query($conn, $query);
 
 if ($row = mysqli_fetch_assoc($result)) {
