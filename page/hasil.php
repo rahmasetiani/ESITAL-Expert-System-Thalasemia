@@ -8,6 +8,23 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
+// Ambil idhasil terakhir berdasarkan user_id
+$user_id = $_SESSION['user_id'];  // ID user yang login
+$query = "SELECT idhasil FROM hasil WHERE iduser = ? ORDER BY created_at DESC LIMIT 1";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $user_id);  // Menggunakan binding integer
+$stmt->execute();
+$result = $stmt->get_result();
+
+// Cek apakah ada hasil
+if ($result->num_rows > 0) {
+    $row = $result->fetch_assoc();
+    $_SESSION['last_idhasil'] = $row['idhasil'];  // Simpan idhasil dalam session
+} else {
+    $_SESSION['last_idhasil'] = null;  // Jika tidak ada hasil, set null
+}
+
+
 // Fetch selected symptoms for the patient from the pasien_gejala table
 $gejalaQuery = "SELECT gejala_terpilih FROM pasien_gejala ORDER BY id DESC LIMIT 1";
 $gejalaResult = $conn->query($gejalaQuery);
@@ -20,42 +37,31 @@ if ($gejalaResult && $gejalaResult->num_rows > 0) {
     $selectedGejala = [];
 }
 
-// Fetch the names of the selected symptoms from the gejala table
+// Fetch the names and weights of the selected symptoms from the gejala table
 $gejalaNames = [];
+$gejalaWeights = [];
 foreach ($selectedGejala as $kode) {
-    $gejalaNameQuery = "SELECT namagejala FROM gejala WHERE kodegejala = ?";
+    // Fetch the symptom name
+    $gejalaNameQuery = "SELECT namagejala, bobot FROM gejala WHERE kodegejala = ?";
     $gejalaNameStmt = $conn->prepare($gejalaNameQuery);
     $gejalaNameStmt->bind_param("s", $kode);
     $gejalaNameStmt->execute();
     $gejalaNameResult = $gejalaNameStmt->get_result();
     $gejalaNameRow = $gejalaNameResult->fetch_assoc();
-    
+
     if ($gejalaNameRow) {
         $gejalaNames[] = $gejalaNameRow['namagejala'];  // Store the name of the symptom
-    }
-}
-
-// Fetch symptom weights from the gejala table
-$gejalaWeights = [];
-foreach ($selectedGejala as $kode) {
-    $gejalaWeightQuery = "SELECT bobot FROM gejala WHERE kodegejala = ?";
-    $gejalaWeightStmt = $conn->prepare($gejalaWeightQuery);
-    $gejalaWeightStmt->bind_param("s", $kode);
-    $gejalaWeightStmt->execute();
-    $gejalaWeightResult = $gejalaWeightStmt->get_result();
-    $weightRow = $gejalaWeightResult->fetch_assoc();
-    if ($weightRow) {
-        $gejalaWeights[$kode] = $weightRow['bobot'];
+        $gejalaWeights[$kode] = $gejalaNameRow['bobot'];  // Store the weight
     }
 }
 
 // Retrieve the threshold value for similarity from the ambang_batas table
-$thresholdQuery = "SELECT nilai FROM ambang_batas WHERE id = 1 LIMIT 1"; // Assuming 1 as the ID for the threshold
+$thresholdQuery = "SELECT nilai FROM ambang_batas WHERE id = 1 LIMIT 1";
 $thresholdStmt = $conn->query($thresholdQuery);
 $thresholdRow = $thresholdStmt->fetch_assoc();
 $threshold = $thresholdRow ? $thresholdRow['nilai'] : 0.0;
 
-// Retrieve patient details based on iduser
+// Retrieve patient details based on user ID
 $patientQuery = "SELECT u.namalengkap AS nama_pasien, u.tanggal_lahir AS tanggallahir_pasien, u.alamat AS alamat_pasien, u.jenis_kelamin AS jk_pasien
                  FROM user u 
                  JOIN pasien_gejala p ON u.id = p.iduser
@@ -67,7 +73,7 @@ $patientResult = $patientStmt->get_result();
 $row = $patientResult->fetch_assoc();
 
 // Retrieve cases from basiskasus and calculate similarity
-$caseQuery = "SELECT bk.kodebasiskasus, bk.kodepenyakit, p.namapenyakit, 
+$caseQuery = "SELECT bk.kodebasiskasus, bk.kodepenyakit, p.namapenyakit, p.deskripsi, p.solusipengobatan, 
               GROUP_CONCAT(g.kodegejala) AS gejala, SUM(g.bobot) AS total_bobot 
               FROM basiskasus bk 
               JOIN penyakit p ON bk.kodepenyakit = p.kodepenyakit 
@@ -76,11 +82,15 @@ $caseQuery = "SELECT bk.kodebasiskasus, bk.kodepenyakit, p.namapenyakit,
               GROUP BY bk.kodebasiskasus";
 $caseResult = $conn->query($caseQuery);
 
-// Initialize arrays for cases above and below the threshold
-$casesAboveThreshold = [];
-$casesBelowThreshold = [];
+// Initialize array for storing all diagnoses and similarity
+$keseluruhanDiagnosa = [];
+$keseluruhanSimilarity = [];
+$bestmatchDiagnosa = '';
+$bestmatchSimilarity = 0;
+$bestmatchDeskripsi = '';
+$bestmatchSolusi = '';
 
-// Process cases and split them into above and below threshold
+// Iterate to find best match and add diagnosis to keseluruhanDiagnosa
 while ($case = $caseResult->fetch_assoc()) {
     $caseGejala = explode(",", $case['gejala']);
     $caseTotalBobot = $case['total_bobot'];
@@ -96,185 +106,235 @@ while ($case = $caseResult->fetch_assoc()) {
     // Calculate similarity as matching weight / total weight of the case
     $similarityScore = $caseTotalBobot > 0 ? $matchingBobot / $caseTotalBobot : 0;
 
-    // Sort cases based on similarity score and split into above and below threshold
-    if ($similarityScore >= ($threshold / 100)) {
-        $casesAboveThreshold[] = [
-            'kodebasiskasus' => $case['kodebasiskasus'],
-            'namapenyakit' => $case['namapenyakit'],
-            'matching_bobot' => $matchingBobot,
-            'total_bobot' => $caseTotalBobot,
-            'similarity' => $similarityScore * 100  // Display as percentage
-        ];
-    } else {
-        $casesBelowThreshold[] = [
-            'kodebasiskasus' => $case['kodebasiskasus'],
-            'namapenyakit' => $case['namapenyakit'],
-            'matching_bobot' => $matchingBobot,
-            'total_bobot' => $caseTotalBobot,
-            'similarity' => $similarityScore * 100
-        ];
+    // Check if it's the best match
+    if ($similarityScore > $bestmatchSimilarity) {
+        $bestmatchDiagnosa = $case['namapenyakit'];
+        $bestmatchDeskripsi = $case['deskripsi'];  // Store the description of the disease
+        $bestmatchSolusi = $case['solusipengobatan'];  // Store the solution for the disease
+        // Store the name of the disease
+        $bestmatchSimilarity = $similarityScore;
     }
+
+    // Add diagnosis to keseluruhanDiagnosa and similarity
+    $keseluruhanDiagnosa[] = $case['namapenyakit'];  // Store the name of the disease
+    $keseluruhanSimilarity[] = round($similarityScore * 100, 2);
 }
 
-// Sort cases above the threshold by similarity descending
-usort($casesAboveThreshold, function($a, $b) {
-    return $b['similarity'] <=> $a['similarity'];
-});
+// If similarity is below the threshold, adjust the result
+if ($bestmatchSimilarity < ($threshold / 100)) {
+    $bestmatchDiagnosa = "Menunggu Revisi Pakar";
+} else {
+    $akurasi = round($bestmatchSimilarity * 100, 2);
+}
 
-// Sort cases below the threshold by similarity ascending (or as needed)
-usort($casesBelowThreshold, function($a, $b) {
-    return $a['similarity'] <=> $b['similarity'];
-});
+// Prepare the data for insertion
+$idUser = $_SESSION['user_id'];
+$namaPasien = $row['nama_pasien'];
+$tanggalLahir = $row['tanggallahir_pasien'];
+$alamat = $row['alamat_pasien'];
+$jenisKelamin = $row['jk_pasien'];
+$gejalaDipilih = implode(", ", $gejalaNames);
+$hasilDiagnosa = $bestmatchDiagnosa;  // Store the name of the disease or default message
 
-$bestMatch = !empty($casesAboveThreshold) ? $casesAboveThreshold[0] : null;
+// JSON encode keseluruhanDiagnosa and keseluruhanSimilarity
+$keseluruhanDiagnosaJson = json_encode($keseluruhanDiagnosa);
+$keseluruhanSimilarityJson = json_encode($keseluruhanSimilarity);
+
+// Insert into 'hasil' table (store nama penyakit, bukan kode penyakit)
+$insertQuery = "INSERT INTO hasil (iduser, nama_pasien, tanggallahir_pasien, alamat_pasien, jk_pasien, gejala_terpilih, hasil_diagnosa, hasil_similarity, created_at, keseluruhan_diagnosa, keseluruhan_similarity)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?)";
+$insertStmt = $conn->prepare($insertQuery);
+$insertStmt->bind_param(
+    "isssssssss", 
+    $idUser, 
+    $namaPasien, 
+    $tanggalLahir, 
+    $alamat, 
+    $jenisKelamin, 
+    $gejalaDipilih, 
+    $hasilDiagnosa, 
+    $akurasi, 
+    $keseluruhanDiagnosaJson, 
+    $keseluruhanSimilarityJson
+);
+
+// Execute the statement
+if ($insertStmt->execute()) {
+    // Data berhasil disimpan
+} else {
+    echo "Error: " . $insertStmt->error;
+}
+
 ?>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-<!-- HTML output -->
+<!-- HTML Output -->
 <div class="container my-5">
-    <section class="diagnosis-section" style="background-color: #f8f9fa; padding: 20px; border-radius: 8px;">
-        <h2 class="text-center mb-4" style="color: black;">Hasil Pemeriksaan Pasien</h2> 
+    <h2 class="text-center mb-4" style="color: black;">Hasil Pemeriksaan Pasien</h2>
+    <button class="btn custom-btn btn-lg" id="printBtn" onclick="redirectToPrintPage()">
+    <i class="fas fa-print"></i> Cetak Hasil
+</button>
+
+<script>
+    function redirectToPrintPage() {
+        // Ambil idhasil terakhir dari session PHP
+        var idhasil = <?php echo isset($_SESSION['last_idhasil']) ? $_SESSION['last_idhasil'] : 'null'; ?>;
         
-        <div class="card mb-4">
-            <div class="card-body">
-                <div class="row justify-content-start">
-                    <div class="col-md-12">
-                        <?php if ($row): ?>
-                            <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <tbody>
-                                        <tr>
-                                            <td><strong>Nama Pasien</strong></td>
-                                            <td><?php echo htmlspecialchars($row['nama_pasien']); ?></td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Tanggal Lahir</strong></td>
-                                            <td><?php echo htmlspecialchars($row['tanggallahir_pasien']); ?></td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Alamat</strong></td>
-                                            <td><?php echo htmlspecialchars($row['alamat_pasien']); ?></td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Jenis Kelamin</strong></td>
-                                            <td><?php echo htmlspecialchars($row['jk_pasien']); ?></td>
-                                        </tr>
-                                        <tr>
-    <td><strong>Gejala yang Dipilih</strong></td>
+        if (idhasil !== null) {
+            // Arahkan ke halaman cetak_hasillangsung.php dengan parameter idhasil
+            window.location.href = "cetak_hasillangsung.php?idhasil=" + idhasil;
+        } else {
+            alert("ID Hasil tidak ditemukan.");
+        }
+    }
+</script>
+
+
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <td><strong>Nama Pasien</strong></td>
+                        <td><?php echo htmlspecialchars($row['nama_pasien']); ?></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tanggal Lahir</strong></td>
+                        <td><?php echo htmlspecialchars($row['tanggallahir_pasien']); ?></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Alamat</strong></td>
+                        <td><?php echo htmlspecialchars($row['alamat_pasien']); ?></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Jenis Kelamin</strong></td>
+                        <td><?php echo htmlspecialchars($row['jk_pasien']); ?></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Gejala yang Dipilih</strong></td>
+                        <td>
+                            <?php 
+                            // Display each selected symptom on a new line
+                            foreach ($gejalaNames as $gejala) {
+                                echo htmlspecialchars($gejala) . "<br>";  // Add line break after each symptom
+                            }
+                            ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+    <td><strong>Hasil Diagnosa</strong></td>
     <td>
-        <?php if (!empty($gejalaNames)): ?>
-            <ol style="margin: 0; padding-left: 20px;">
-                <?php foreach ($gejalaNames as $gejalaName): ?>
-                    <li><?php echo htmlspecialchars($gejalaName); ?></li>
-                <?php endforeach; ?>
-            </ol>
-        <?php else: ?>
-            Tidak ada gejala yang ditemukan.
-        <?php endif; ?>
+        <?php 
+            echo htmlspecialchars($bestmatchDiagnosa);
+            if ($bestmatchSimilarity < ($threshold / 100)) {
+                echo "<br>Berdasarkan gejala yang anda pilih, anda tidak terdeteksi penyakit thalassemia atau serupa.";
+                echo "<br>Namun, gejala yang anda alami akan kami tinjau ulang bersama pakar untuk memastikan hasil diagnosa lebih akurat.";}
+        ?>
     </td>
 </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        <?php else: ?>
-                            <p class="text-center">Tidak ada data pasien yang ditemukan.</p>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </div>
+
+                    <?php if ($bestmatchSimilarity >= ($threshold / 100)): ?>
+                    <tr>
+                        <td><strong>Deskripsi Penyakit</strong></td>
+                        <td><?php echo htmlspecialchars($bestmatchDeskripsi); ?></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Solusi Penyakit</strong></td>
+                        <td><?php echo htmlspecialchars($bestmatchSolusi); ?></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Akurasi Diagnosa (%)</strong></td>
+                        <td><?php echo number_format($akurasi, 2) . "%"; ?></td>
+                    </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
+    </div>
 
-        <!-- Display cases above threshold -->
-        <h2 class="text-center mb-4" style="color: black;">Hasil Diagnosa</h2> 
-<?php if ($bestMatch): ?>
-<?php
-// Ambil kodepenyakit dari $bestMatch (asumsi bestMatch sudah ada)
-$namapenyakit = $bestMatch['namapenyakit'];
+<!-- Menggunakan Font Awesome untuk ikon -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-// Query untuk mengambil informasi penyakit
-$query = "SELECT * FROM penyakit WHERE namapenyakit = ?";
-$stmt = $conn->prepare($query);
-$stmt->bind_param("s", $namapenyakit);  // Bind kodepenyakit ke query
-$stmt->execute();
-$result = $stmt->get_result();
-
-// Cek apakah ada data penyakit yang ditemukan
-if ($result->num_rows > 0) {
-    $penyakit = $result->fetch_assoc(); // Ambil data penyakit
-} else {
-    $penyakit = null; // Jika tidak ditemukan
-}
-?>
-    <div class="card">
-        <div class="card-body">
-        <h5 style="color: black;">Hasil diagnosa menunjukkan bahwa berdasarkan gejala yang anda rasakan anda memiliki kemungkinan menggidap penyakit :  </h5>
-<br>
-        <h5 style="color: black;"><strong><?php echo htmlspecialchars($bestMatch['namapenyakit']); ?></p> </strong></h></h5>
-            <h5 style="color: black;">
-                <strong>Dengan Akurasi Pakar :</strong> <?php echo round($bestMatch['similarity'], 2); ?>%
-                <!-- (<?php echo $bestMatch['matching_bobot']; ?> bobot matching / <?php echo $bestMatch['total_bobot']; ?> total bobot) --></h5>
-            <br>
-            <!-- Menampilkan detail penyakit jika data ditemukan -->
-            <?php if ($penyakit): ?>
-                <?php if ($penyakit['foto']): ?>
-    <img src="../asset/image/penyakit/<?php echo htmlspecialchars($penyakit['foto']); ?>" alt="Foto Penyakit" class="img-fluid rounded-corner shadow-effect" style="max-width: 300px; height: auto;">
-<?php endif; ?>
-
-                <br>
-                <br>
-                <p style="text-align: justify;"><strong>Deskripsi Penyakit:</strong> <?php echo htmlspecialchars($penyakit['deskripsi']); ?></p>
-                <p style="text-align: justify;"><strong>Solusi Pengobatan:</strong> <?php echo htmlspecialchars($penyakit['solusipengobatan']); ?></p>
-               
-            <?php else: ?>
-                <p style="color: black;">Informasi tentang penyakit tidak ditemukan.</p>
-            <?php endif; ?>
-            <br>
-            <h5 style="color: black;">Kemungkinan Penyakit Lain di Atas Ambang Batas Pakar</h5>
-            <ul class="list-group">
-                <?php foreach ($casesAboveThreshold as $case): ?>
-                    <li class="list-group-item">
-                        <!-- <strong>Kode Kasus:</strong> <?php echo htmlspecialchars($case['kodebasiskasus']); ?>,  -->
-                        <strong>Penyakit:</strong> <?php echo htmlspecialchars($case['namapenyakit']); ?>, 
-                        <strong>Akurasi:</strong> <?php echo round($case['similarity'], 2); ?>%
-                    </li>
-                <?php endforeach; ?>
-            </ul> <br>
-<?php else: ?>
-    <p class="text-center" style="color: black;"><strong>Berdasarkan gejala yang Anda rasakan, Anda tidak terindikasi menderita penyakit Thalassemia.</strong></p>
-    <p class="text-center" style="color: black;"><strong> Namun, gejala yang Anda alami akan kami tinjau ulang bersama pakar untuk memastikan hasil diagnosa lebih akurat.</p></strong> <br>
-<?php endif; ?>
-<!-- Display cases below threshold -->
-<h5 style="color: black;">Kemungkinan Penyakit Lain di Bawah Ambang Batas Pakar</h5>
-<?php if (!empty($casesBelowThreshold)): ?>
-    <ul class="list-group">
-        <?php foreach ($casesBelowThreshold as $case): ?>
-            <?php if ($case['similarity'] > 0): ?>
-                <li class="list-group-item">
-                    <!-- <strong>Kode Kasus:</strong> <?php echo htmlspecialchars($case['kodebasiskasus']); ?>,  -->
-                    <strong>Penyakit:</strong> <?php echo htmlspecialchars($case['namapenyakit']); ?>, 
-                    <strong>Akurasi:</strong> <?php echo round($case['similarity'], 2); ?>%
-                </li>
-            <?php endif; ?>
-        <?php endforeach; ?>
-    </ul>
-<?php endif; ?>
-
-
-    </section>
+<div class="card">
+    <div class="card-body d-flex justify-content-between">       
+        <!-- Tombol Tampilkan Semua Diagnosa -->
+        <button class="btn custom-btn btn-lg" id="toggleDiagnosesBtn" onclick="toggleDiagnosesTable()">
+            <i class="fas fa-search-plus" id="diagnosesIcon"></i> Tampilkan Semua Diagnosa
+        </button>
+    </div>
 </div>
+
 <style>
-    /* Add these styles to your CSS file or inside a <style> tag */
-.rounded-corner {
-    border-radius: 15px; /* Adjust the value for more/less rounding */
-}
-
-.shadow-effect {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adds a subtle shadow around the image */
-}
-
+    .btn.custom-btn {
+        padding: 10px 20px;
+        font-size: 16px;
+        width: auto; /* Tombol mengikuti panjang teks */
+        max-width: none; /* Tidak ada batasan lebar maksimum */
+        white-space: nowrap; /* Menghindari teks tombol terpotong jika terlalu panjang */
+        display: inline-block; /* Pastikan tombol diatur sebaris */
+    }
 </style>
-<?php include 'footer.php'; ?>
 
+<!-- Tabel Diagnosa -->
+<div id="diagnosesTable" style="display:none;">
+    <div class="table-responsive" style="max-width: 800px; margin: 0 auto;">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Diagnosa Penyakit</th>
+                    <th>Presentase (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php 
+                // Combine diagnoses and similarities into an associative array
+                $diagnosisData = [];
+                foreach ($keseluruhanDiagnosa as $index => $diagnosis) {
+                    $similarityPercentage = $keseluruhanSimilarity[$index];
+                    if ($similarityPercentage > 0) {
+                        $diagnosisData[] = [
+                            'diagnosis' => $diagnosis,
+                            'similarity' => $similarityPercentage
+                        ];
+                    }
+                }
+
+                // Sort the array by similarity in descending order
+                usort($diagnosisData, function($a, $b) {
+                    return $b['similarity'] - $a['similarity'];
+                });
+
+                // Loop through the sorted data and display the results
+                foreach ($diagnosisData as $data) {
+                    echo "<tr>
+                            <td>" . htmlspecialchars($data['diagnosis']) . "</td>
+                            <td>" . number_format($data['similarity'], 2) . "%</td>
+                          </tr>";
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+
+<script>
+    function toggleDiagnosesTable() {
+        var table = document.getElementById("diagnosesTable");
+        var button = document.getElementById("toggleDiagnosesBtn");
+        var icon = document.getElementById("diagnosesIcon");
+
+        if (table.style.display === "none") {
+            table.style.display = "block";
+            button.innerHTML = '<i class="fas fa-search-minus" id="diagnosesIcon"></i> Sembunyikan Semua Diagnosa'; // Ganti ikon dan teks
+        } else {
+            table.style.display = "none";
+            button.innerHTML = '<i class="fas fa-search-plus" id="diagnosesIcon"></i> Tampilkan Semua Diagnosa'; // Kembalikan ikon dan teks
+        }
+    }
+</script>
+
+
+<?php 
+include 'footer.php';?>

@@ -63,7 +63,9 @@ include '../handler/ambangbatas/admin-ubahambangbatas.php';  // Include the logi
 
         <!-- Show the "Ubah" button to enable editing, inside a flex container for centering -->
         <div class="text-center">
-        <button id="ubah_button" class="btn btn-custom" style="background-color: #d62268; border-color: #d62268;color : #ffffff" data-bs-toggle="modal" data-bs-target="#ubahModal">Ubah Nilai Ambang Batas</button>
+        <button class="btn" id="toggleDiagnosesBtn" onclick="toggleDiagnosesTable()" style="background-color: #d62268; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+    Tampilkan Semua Diagnosa
+</button>
         </div>
     </div>
 
@@ -93,7 +95,11 @@ include '../handler/ambangbatas/admin-ubahambangbatas.php';  // Include the logi
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../asset/js/admin.js"></script>
 
 </body>
 </html>

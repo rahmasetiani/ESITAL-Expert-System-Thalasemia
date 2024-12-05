@@ -67,7 +67,7 @@ Selain itu, website ini juga berfungsi sebagai platform untuk berbagi pengalaman
     dan sumber daya. Kami berharap dapat menciptakan komunitas yang saling mendukung, 
     sehingga bersama-sama kita dapat meningkatkan kualitas hidup penderita thalassemia.
 </p>
-<a href="page/diagnosa.php" class="btn custom-btn btn-lg">Detesi Dini Thalassemia</a>
+<a href="diagnosa.php" class="btn custom-btn btn-lg">Detesi Dini Thalassemia</a>
 
 </div>
         </div>

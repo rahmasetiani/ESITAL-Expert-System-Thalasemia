@@ -48,7 +48,11 @@ include '../handler/penyakit/get_penyakit.php'; // Memanggil get_penyakit
                     <?php endwhile; ?>
                 </div>
             </div>
+
         </div>
+       <br><br>
+        <a href="diagnosa.php" class="btn custom-btn btn-lg">Detesi Dini Thalassemia</a>
+
     </div>
 </section>
 
