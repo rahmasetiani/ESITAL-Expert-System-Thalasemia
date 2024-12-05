@@ -2,28 +2,34 @@
 include 'header.php';
 require '../database/koneksi.php';
 
-// Check if the user is logged in
+// Cek apakah pengguna sudah login
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit;
 }
 
-// Ambil idhasil terakhir berdasarkan user_id
 $user_id = $_SESSION['user_id'];  // ID user yang login
-$query = "SELECT idhasil FROM hasil WHERE iduser = ? ORDER BY created_at DESC LIMIT 1";
-$stmt = $conn->prepare($query);
-$stmt->bind_param("i", $user_id);  // Menggunakan binding integer
-$stmt->execute();
-$result = $stmt->get_result();
 
-// Cek apakah ada hasil
-if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-    $_SESSION['last_idhasil'] = $row['idhasil'];  // Simpan idhasil dalam session
+// Cek apakah sudah ada ID hasil di session
+if (isset($_SESSION['last_idhasil'])) {
+    $last_idhasil = $_SESSION['last_idhasil'];
 } else {
-    $_SESSION['last_idhasil'] = null;  // Jika tidak ada hasil, set null
-}
+    // Ambil idhasil terakhir berdasarkan user_id jika belum ada
+    $query = "SELECT idhasil FROM hasil WHERE iduser = ? ORDER BY created_at DESC LIMIT 1";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $user_id);  // Menggunakan binding integer
+    $stmt->execute();
+    $result = $stmt->get_result();
 
+    // Cek apakah ada hasil
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $_SESSION['last_idhasil'] = $row['idhasil'];  // Simpan idhasil dalam session
+        $last_idhasil = $row['idhasil'];  // Set ID hasil
+    } else {
+        $last_idhasil = null;  // Jika tidak ada hasil, set null
+    }
+}
 
 // Fetch selected symptoms for the patient from the pasien_gejala table
 $gejalaQuery = "SELECT gejala_terpilih FROM pasien_gejala ORDER BY id DESC LIMIT 1";
@@ -141,6 +147,7 @@ $keseluruhanDiagnosaJson = json_encode($keseluruhanDiagnosa);
 $keseluruhanSimilarityJson = json_encode($keseluruhanSimilarity);
 
 // Insert into 'hasil' table (store nama penyakit, bukan kode penyakit)
+// Insert into 'hasil' table (store nama penyakit, bukan kode penyakit)
 $insertQuery = "INSERT INTO hasil (iduser, nama_pasien, tanggallahir_pasien, alamat_pasien, jk_pasien, gejala_terpilih, hasil_diagnosa, hasil_similarity, created_at, keseluruhan_diagnosa, keseluruhan_similarity)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?)";
 $insertStmt = $conn->prepare($insertQuery);
@@ -160,37 +167,44 @@ $insertStmt->bind_param(
 
 // Execute the statement
 if ($insertStmt->execute()) {
-    // Data berhasil disimpan
+    // Set session variable for last_idhasil after successful insertion
+    $_SESSION['last_idhasil'] = $conn->insert_id;  // Store the last inserted ID
+    echo "Data berhasil disimpan dengan ID hasil: " . $_SESSION['last_idhasil'];
 } else {
     echo "Error: " . $insertStmt->error;
 }
 
 ?>
-
-<!-- HTML Output -->
-<div class="container my-5">
-    <h2 class="text-center mb-4" style="color: black;">Hasil Pemeriksaan Pasien</h2>
-    <button class="btn custom-btn btn-lg" id="printBtn" onclick="redirectToPrintPage()">
-    <i class="fas fa-print"></i> Cetak Hasil
-</button>
-
 <script>
     function redirectToPrintPage() {
-        // Ambil idhasil terakhir dari session PHP
-        var idhasil = <?php echo isset($_SESSION['last_idhasil']) ? $_SESSION['last_idhasil'] : 'null'; ?>;
-        
-        if (idhasil !== null) {
-            // Arahkan ke halaman cetak_hasillangsung.php dengan parameter idhasil
-            window.location.href = "cetak_hasillangsung.php?idhasil=" + idhasil;
-        } else {
-            alert("ID Hasil tidak ditemukan.");
-        }
+    // Ambil idhasil terakhir dari session PHP dan tambahkan 1
+    var idhasil = <?php echo isset($_SESSION['last_idhasil']) ? $_SESSION['last_idhasil'] : 'null'; ?>;
+
+    if (idhasil !== null) {
+        // Arahkan ke halaman cetak_hasillangsung.php dengan parameter idhasil
+        window.location.href = "cetak_hasillangsung.php?idhasil=" + idhasil;
+
+        // Redirect ke riwayat.php setelah 1 detik (biarkan waktu untuk memuat halaman cetak)
+        setTimeout(function() {
+            window.location.href = "riwayat.php";
+        }, 1000); // 1000ms = 1 detik
+    } else {
+        alert("ID Hasil tidak ditemukan.");
     }
+}
+
 </script>
 
 
 
-    <div class="card mb-4">
+<section class="py-5 text-left" style="padding: 0 20px;">
+<h2 class="navbar-brand large-text" style="color: #d62268; margin-bottom: 1rem; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); text-align: center; font-size: calc(1.5rem + 2vw);">
+        Hasil Deteksi Anda
+    </h2>
+    <button class="btn custom-btn btn-lg" id="printBtn" onclick="redirectToPrintPage()">
+        <i class="fas fa-print"></i> Cetak Hasil
+    </button>
+    <div class="container my-5">
         <div class="card-body">
             <table class="table">
                 <tbody>
@@ -256,7 +270,6 @@ if ($insertStmt->execute()) {
 <!-- Menggunakan Font Awesome untuk ikon -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-<div class="card">
     <div class="card-body d-flex justify-content-between">       
         <!-- Tombol Tampilkan Semua Diagnosa -->
         <button class="btn custom-btn btn-lg" id="toggleDiagnosesBtn" onclick="toggleDiagnosesTable()">
@@ -318,6 +331,7 @@ if ($insertStmt->execute()) {
     </div>
 </div>
 </div>
+</section>
 
 <script>
     function toggleDiagnosesTable() {
