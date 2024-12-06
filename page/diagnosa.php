@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $conn->commit();
 
             // Redirect to the final process page (hasil.php or another page)
-            header("Location: hasil.php"); // Adjust the location if needed
+            header("Location: prosescbr.php"); // Adjust the location if needed
             exit;
 
         } catch (Exception $e) {
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo $error_message; // Display the error message for debugging
         }
     } else {
-        $error_message = "Please select at least 3 symptoms."; // Error message if less than 3 symptoms are selected
+        $error_message = "Anda perlu memilih setidaknya 3 gejala."; // Error message if less than 3 symptoms are selected
     }
 }
 ?>
@@ -56,23 +56,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true): ?>
     <section class="py-5 text-center">
-<h2 class="navbar-brand large-text" style="color: #d62268; margin-bottom: 1rem; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); text-align: center; font-size: calc(1.5rem + 2vw);">
-Deteksi Dini Thalassemia        </h2>
+        <h2 class="navbar-brand large-text" style="color: #d62268; margin-bottom: 1rem; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); text-align: center; font-size: calc(1.5rem + 2vw);">
+            Deteksi Dini Thalassemia
+        </h2>
         <h3 style="color: #757375; margin-bottom: 2rem; text-align: center; font-size: calc(1rem + 1.5vw);">
-        Masukan Gejala Yang Anda Alami
+            Masukan Gejala Yang Anda Alami
         </h3>
 
         <form method="POST">
             <!-- Table to display gejala -->
             <div class="table-responsive">
-    <table class="table table-bordered" style="max-width: 1000px; margin: 0 auto; border-collapse: collapse; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-        <thead style="background-color: #d62268; color: white; text-shadow: 1px 1px 5px rgba(0,0,0,0.3);">
-            <tr>
-                <th style="width: 10%; text-align: center; padding: 8px;">Kode Gejala</th>
-                <th style="width: 50%; text-align: center; padding: 8px;">Nama Gejala</th>
-                <th style="width: 20%; text-align: center; padding: 8px;">Checklist</th>
-            </tr>
-        </thead>
+                <table class="table table-bordered" style="max-width: 1000px; margin: 0 auto; border-collapse: collapse; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <thead style="background-color: #d62268; color: white; text-shadow: 1px 1px 5px rgba(0,0,0,0.3);">
+                        <tr>
+                            <th style="width: 10%; text-align: center; padding: 8px;">Kode Gejala</th>
+                            <th style="width: 50%; text-align: center; padding: 8px;">Nama Gejala</th>
+                            <th style="width: 20%; text-align: center; padding: 8px;">Checklist</th>
+                        </tr>
+                    </thead>
                     <tbody>
                         <?php
                         if (!empty($symptoms)) {
@@ -93,11 +94,20 @@ Deteksi Dini Thalassemia        </h2>
                 </table>
             </div>
             <br>
+
+            <!-- Display error message as a Bootstrap toast -->
             <?php if (!empty($error_message)): ?>
-                <div class="alert alert-danger" role="alert">
-                    <?php echo htmlspecialchars($error_message); ?>
+                <div class="toast-container position-fixed top-0 end-0 p-3">
+                    <div class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                <?php echo htmlspecialchars($error_message); ?>
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
                 </div>
-            <?php endif; ?>            
+            <?php endif; ?>
 
             <!-- Next Button -->
             <div class="d-flex justify-content-center mt-4">
@@ -120,8 +130,17 @@ Deteksi Dini Thalassemia        </h2>
         </div>
     </section>
 <?php endif; ?>
-</section>
 
+</section>
 
 <!-- Footer (gunakan include untuk memisah footer) -->
 <?php include 'footer.php'; ?>
+
+<script>
+    // Automatically show the toast if there is an error message
+    var myToast = document.querySelector('.toast');
+    if (myToast) {
+        var toast = new bootstrap.Toast(myToast);
+        toast.show();
+    }
+</script>

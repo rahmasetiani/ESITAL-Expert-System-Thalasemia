@@ -28,6 +28,14 @@ include '../handler/ambangbatas/admin-ubahambangbatas.php';  // Include the logi
         .btn-custom {
             font-size: 1.1rem;
         }
+        .btn-pink {
+            background-color: #d62268 !important;
+            color: white !important;
+        }
+        .btn-pink:hover {
+            background-color: #c11d5a;
+            color: white;
+        }
         .content-header {
             margin-bottom: 40px;
         }
@@ -63,9 +71,7 @@ include '../handler/ambangbatas/admin-ubahambangbatas.php';  // Include the logi
 
         <!-- Show the "Ubah" button to enable editing, inside a flex container for centering -->
         <div class="text-center">
-        <button class="btn" id="toggleDiagnosesBtn" onclick="toggleDiagnosesTable()" style="background-color: #d62268; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
-    Tampilkan Semua Diagnosa
-</button>
+            <button id="ubah_button" class="btn btn-pink btn-custom" data-bs-toggle="modal" data-bs-target="#ubahModal">Ubah Nilai Ambang Batas</button>
         </div>
     </div>
 
@@ -84,8 +90,8 @@ include '../handler/ambangbatas/admin-ubahambangbatas.php';  // Include the logi
                             <input type="number" class="form-control" id="nilai_ambang_batas" name="nilai_ambang_batas" value="<?php echo $current_threshold; ?>" min="0" max="100" step="0.01">
                         </div>
                         <div class="d-flex justify-content-center gap-3">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">Kirim Ambang Batas</button>
+                            <button type="button" class="btn btn-secondary btn-custom" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-pink btn-custom">Ubah Ambang Batas</button>
                         </div>
                     </form>
                 </div>
@@ -95,11 +101,7 @@ include '../handler/ambangbatas/admin-ubahambangbatas.php';  // Include the logi
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="../asset/js/admin.js"></script>
 
 </body>
 </html>
