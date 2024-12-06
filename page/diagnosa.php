@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $conn->commit();
 
             // Redirect to the final process page (hasil.php or another page)
-            header("Location: prosescbr.php"); // Adjust the location if needed
+            header("Location: ../handler/diagnosa/prosescbr.php"); // Adjust the location if needed
             exit;
 
         } catch (Exception $e) {
@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <form method="POST">
             <!-- Table to display gejala -->
-            <div class="table-responsive">
+            <div class="table-responsive" style="max-width: 1000px; margin: 0 auto;" >
                 <table class="table table-bordered" style="max-width: 1000px; margin: 0 auto; border-collapse: collapse; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
                     <thead style="background-color: #d62268; color: white; text-shadow: 1px 1px 5px rgba(0,0,0,0.3);">
                         <tr>
@@ -144,3 +144,134 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         toast.show();
     }
 </script>
+
+<style>
+    /* Section Styling */
+section.py-5 {
+    padding: 50px 20px;
+}
+
+/* Table Styling */
+table {
+    border-radius: 12px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6);  /* Adding stronger shadow for depth */
+    border-collapse: collapse;
+    margin: 0px auto;
+    font-size: 16px;
+    width: 100%;
+    background-color: #ffffff; /* Ganti latar belakang tabel menjadi putih */
+}
+
+thead {
+    background: linear-gradient(45deg, #d62268, #9e005d);
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
+
+tbody tr:hover {
+    background-color: #f4f4f4;
+    transform: scale(1.02);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+
+
+td, th {
+    padding: 1px 1px; /* Perbesar kotak agar lebih jelas dan cukup besar */
+    text-align: center;
+    border: 1px solid #ddd;
+    font-size: 15px;
+    color: #ffffff;
+    border-radius: 6px;
+}
+
+th {
+    font-weight: bold;
+}
+
+/* Form Section */
+form {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+/* Checkbox */
+input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+    margin: 2px;
+}
+
+/* Button Styling */
+.btn.custom-btn {
+    background: #d62268;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 25px; /* Perbesar ukuran tombol */
+    font-size: 18px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.btn.custom-btn:hover {
+    background: #9e005d;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn.custom-btn:focus {
+    outline: none;
+    box-shadow: 0 0 5px 2px #d62268;
+}
+
+/* Toast Message Styling */
+.toast-container {
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 1050;
+}
+
+.toast {
+    max-width: 300px;
+    font-size: 14px;
+    padding: 15px;
+    margin-top: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.toast-body {
+    font-size: 16px;
+}
+
+.toast.text-bg-danger {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.toast .btn-close {
+    margin-left: auto;
+}
+
+/* Page Heading */
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    table {
+        font-size: 14px;
+    }
+
+    .btn.custom-btn {
+        font-size: 16px;
+        padding: 10px 20px;
+    }
+}
+
+
+</style>

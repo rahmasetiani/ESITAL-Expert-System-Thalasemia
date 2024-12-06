@@ -2,7 +2,7 @@
 // prosescbr.php
 
 session_start();
-require '../database/koneksi.php'; // Sesuaikan path koneksi
+require '../../database/koneksi.php'; // Sesuaikan path koneksi
 
 // Cek apakah pengguna sudah login
 if (!isset($_SESSION['user_id'])) {
@@ -170,7 +170,7 @@ $insertStmt->bind_param(
 if ($insertStmt->execute()) {
     // Set session variable for last_idhasil after successful insertion
     $_SESSION['last_idhasil'] = $conn->insert_id;  // Store the last inserted ID
-    header("Location: hasil.php"); // Redirect to hasil.php
+    header("Location: ../../page/hasil.php"); // Redirect to hasil.php
     exit();
 } else {
     echo "Error: " . $insertStmt->error;

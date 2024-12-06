@@ -61,72 +61,177 @@ include 'footer.php'; // Memanggil footer
 ?>
 
 <style>
-    .card {
-        height: auto; /* Allow the card to expand based on content */
-        min-width: 350px;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
+.card {
+    height: auto; /* Allow the card to expand based on content */
+    min-width: 350px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #d62268;
+}
+
+.card-text {
+    font-size: 1.1rem;
+    color: #555;
+    line-height: 1.6;
+}
+
+/* Show More/Show Less */
+.show-more, .show-more-solution {
+    color: #d62268;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.show-more:hover, .show-more-solution:hover {
+    text-decoration: underline;
+}
+
+/* Expanded text */
+.description.expanded, .solution.expanded {
+    max-height: none;
+    overflow: visible;
+}
+
+/* Custom Button */
+.btn.custom-btn {
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    background-color: #d62268;
+    border-radius: 5px;
+    color: white;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    max-width: 300px; /* Maximum width for the button */
+    display: block;
+    margin: 20px auto;
+    border: none;
+    text-align: center;
+}
+
+.btn.custom-btn:hover {
+    background-color: #a91e56;
+}
+
+
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .card {
+        min-width: 100%; /* Ensure cards stack in smaller screens */
+        margin-bottom: 20px;
+    }
+    
     .card-body {
-        padding: 1.5rem;
+        padding: 1rem;
     }
 
     .card-text {
-        font-size: 1.1rem;
-        color: #555;
+        font-size: 1rem;
     }
 
     .show-more, .show-more-solution {
-        color: #d62268; /* Pink color for Show More/Show Less */
+        font-size: 0.9rem;
     }
 
-    .description.expanded, .solution.expanded {
-        max-height: none;
-        overflow: visible;
+    .btn.custom-btn {
+        font-size: 1rem;
     }
+}
+
+@media (max-width: 480px) {
+    .navbar-brand.large-text {
+        font-size: 2rem;
+    }
+
+    .container {
+        padding: 0 10px;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+    }
+
+    .card-body {
+        padding: 0.8rem;
+    }
+}
+/* Link "Show More" dan "Show Less" */
+.show-more, .show-more-solution {
+    color: #d62268 !important; /* Warna pink dengan !important untuk memastikan */
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.show-more:hover, .show-more-solution:hover {
+    text-decoration: underline;
+}
+
+
 </style>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const showMoreLinks = document.querySelectorAll('.show-more');
-        const showMoreSolutionLinks = document.querySelectorAll('.show-more-solution');
+document.addEventListener('DOMContentLoaded', function () {
+    const showMoreLinks = document.querySelectorAll('.show-more');
+    const showMoreSolutionLinks = document.querySelectorAll('.show-more-solution');
 
-        // Toggle "Show More" and "Show Less" for description
-        showMoreLinks.forEach(link => {
-            link.addEventListener('click', function (e) {
-                e.preventDefault();
-                const parent = e.target.closest('.card-body');
-                const description = parent.querySelector('.card-text.description');
-                const isExpanded = description.classList.contains('expanded');
+    // Toggle "Show More" and "Show Less" for description
+    showMoreLinks.forEach(link => {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            const parent = e.target.closest('.card-body');
+            const description = parent.querySelector('.card-text.description');
+            const isExpanded = description.classList.contains('expanded');
 
-                if (isExpanded) {
-                    description.classList.remove('expanded');
-                    e.target.innerText = 'Show More';
-                } else {
-                    description.classList.add('expanded');
-                    e.target.innerText = 'Show Less';
-                }
-            });
-        });
-
-        // Toggle "Show More" and "Show Less" for solution
-        showMoreSolutionLinks.forEach(link => {
-            link.addEventListener('click', function (e) {
-                e.preventDefault();
-                const parent = e.target.closest('.card-body');
-                const solution = parent.querySelector('.card-text.solution');
-                const isExpanded = solution.classList.contains('expanded');
-
-                if (isExpanded) {
-                    solution.classList.remove('expanded');
-                    e.target.innerText = 'Show More';
-                } else {
-                    solution.classList.add('expanded');
-                    e.target.innerText = 'Show Less';
-                }
-            });
+            if (isExpanded) {
+                description.classList.remove('expanded');
+                e.target.innerText = 'Show More';
+            } else {
+                description.classList.add('expanded');
+                e.target.innerText = 'Show Less';
+            }
         });
     });
+
+    // Toggle "Show More" and "Show Less" for solution
+    showMoreSolutionLinks.forEach(link => {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            const parent = e.target.closest('.card-body');
+            const solution = parent.querySelector('.card-text.solution');
+            const isExpanded = solution.classList.contains('expanded');
+
+            if (isExpanded) {
+                solution.classList.remove('expanded');
+                e.target.innerText = 'Show More';
+            } else {
+                solution.classList.add('expanded');
+                e.target.innerText = 'Show Less';
+            }
+        });
+    });
+});
+
+
 </script>

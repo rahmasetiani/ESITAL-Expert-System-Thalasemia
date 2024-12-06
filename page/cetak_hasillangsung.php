@@ -288,8 +288,4 @@ $dompdf->stream("hasil_diagnosa.pdf", ["Attachment" => false]);
 
 // Akhiri script
 exit;
-
 ?>
-
-
-

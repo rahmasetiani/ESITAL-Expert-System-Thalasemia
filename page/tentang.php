@@ -32,10 +32,106 @@ include 'header.php'; ?>
 
 
 <style>
-    section {
-        background-color: #f8f9fa; /* Warna latar belakang yang lembut */
-        background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.05)); /* Tekstur warna */
+    /* Background dan Section */
+section {
+    background-color: #f8f9fa;
+    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(0, 0, 0, 0.05));
+    padding: 60px 20px; /* Menambahkan padding lebih banyak untuk memberi ruang */
+}
+
+/* Styling untuk Judul */
+.navbar-brand.large-text {
+    margin-bottom: 1rem;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    color: #d62268;
+    font-size: calc(1.5rem + 2vw);
+    line-height: 1.2;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+p {
+    text-align: justify;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1.2rem;
+    line-height: 1.7;
+    color: #555;
+    text-indent: 30px;
+    margin-bottom: 1.5rem;
+    font-weight: 400;
+    max-width: 900px;
+    margin: 0 auto 1.5rem;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Efek Hover untuk Paragraf */
+p:hover {
+    color: #d62268;
+    transform: translateY(-5px);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling Tombol */
+.btn.custom-btn {
+    padding: 12px 25px;
+    font-size: 1.2rem;
+    background-color: #d62268;
+    border-radius: 5px;
+    color: white;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    width: 100%;
+    max-width: 350px; /* Maximum width untuk tombol */
+    display: block;
+    margin: 30px auto 0;
+    border: none;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* Efek Hover untuk Tombol */
+.btn.custom-btn:hover {
+    background-color: #a91e56;
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .navbar-brand.large-text {
+        font-size: calc(1.5rem + 3vw);
     }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .btn.custom-btn {
+        font-size: 1rem;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar-brand.large-text {
+        font-size: 2rem;
+    }
+
+    .container {
+        padding: 0 10px;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+    }
+
+    .card-body {
+        padding: 0.8rem;
+    }
+}
+
 </style>
 
 

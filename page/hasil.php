@@ -187,28 +187,39 @@ if ($penyakitData) {
                 $diagnosaArray = explode(',', $lastResultMessage['keseluruhan_diagnosa']);
                 $similarityArray = explode(',', $lastResultMessage['keseluruhan_similarity']);
 
-                // Loop untuk menampilkan setiap item hasil diagnosa dan similarity yang memiliki similarity > 0
+                // Gabungkan hasil diagnosa dan similarity ke dalam array asosiatif
+                $diagnosaSimilarity = [];
                 for ($i = 0; $i < count($diagnosaArray); $i++) {
                     // Trim nilai dan hapus tanda kutip atau karakter yang tidak diinginkan
                     $diagnosa = trim($diagnosaArray[$i], ' "[]');
                     $similarityValue = trim($similarityArray[$i], ' "[]');
-
-                    // Cek jika similarity > 0
+                    
+                    // Masukkan ke dalam array jika similarity > 0
                     if ($similarityValue > 0) {
-                        echo "<tr>
-                                <td>" . htmlspecialchars($diagnosa) . "</td>
-                                <td>" . htmlspecialchars($similarityValue) . "%</td>
-                              </tr>";
+                        $diagnosaSimilarity[] = [
+                            'diagnosa' => $diagnosa,
+                            'similarity' => (float)$similarityValue
+                        ];
                     }
+                }
+
+                // Urutkan array berdasarkan similarity dari terbesar ke terkecil
+                usort($diagnosaSimilarity, function ($a, $b) {
+                    return $b['similarity'] - $a['similarity']; // Membandingkan berdasarkan similarity
+                });
+
+                // Tampilkan data yang telah diurutkan
+                foreach ($diagnosaSimilarity as $item) {
+                    echo "<tr>
+                            <td>" . htmlspecialchars($item['diagnosa']) . "</td>
+                            <td>" . htmlspecialchars($item['similarity']) . "%</td>
+                          </tr>";
                 }
                 ?>
             </tbody>
         </table>
     </div>
 </div>
-
-
-
 
 </div>
 </section>
@@ -252,3 +263,135 @@ if ($penyakitData) {
 
 </body>
 </html>
+
+<style>
+    /* Style untuk kontainer utama */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Tampilan untuk tombol kustom */
+.btn.custom-btn {
+    padding: 12px 24px;
+    font-size: 18px;
+    background-color: #d62268;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+    width: auto;
+}
+
+.btn.custom-btn:hover {
+    background-color: #b51e5a;
+}
+
+.btn.custom-btn i {
+    margin-right: 8px;
+}
+
+/* Header utama */
+h2.navbar-brand {
+    color: #d62268;
+    margin-bottom: 1rem;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    font-size: calc(1.5rem + 2vw);
+}
+
+/* Tabel Hasil Diagnosa */
+.table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+.table th, .table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.table th {
+    background-color: #f8f9fa;
+    color: #555;
+}
+
+.table td {
+    background-color: #fff;
+    color: #333;
+}
+
+/* Tampilan responsif untuk tabel */
+@media (max-width: 768px) {
+    .table th, .table td {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}
+
+/* Gaya untuk tombol toggle diagnosa */
+#toggleDiagnosesBtn {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    color: #d62268;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+}
+
+#toggleDiagnosesBtn:hover {
+    background-color: #f1f1f1;
+}
+
+#diagnosesTable {
+    margin-top: 20px;
+}
+
+#diagnosesTable .table {
+    border-top: 2px solid #ddd;
+    margin-top: 15px;
+}
+
+#diagnosesTable .table td, #diagnosesTable .table th {
+    padding: 10px;
+}
+
+/* Tabel Diagnosa lainnya */
+#diagnosesTable .table thead {
+    background-color: #f8f9fa;
+}
+
+#diagnosesTable .table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Tampilkan hasil diagnosa jika ada kesalahan */
+.alert {
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 5px;
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.alert.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+/* Footer */
+footer {
+    background-color: #f1f1f1;
+    padding: 20px;
+    text-align: center;
+}
+
+</style>

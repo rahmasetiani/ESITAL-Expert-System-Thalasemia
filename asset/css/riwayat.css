@@ -1,0 +1,42 @@
+/* Styling untuk blur effect */
+.table-blurred th, .table-blurred td {
+    background-color: rgba(255, 255, 255, 0.8); /* Efek transparansi */
+    backdrop-filter: blur(10px);
+}
+
+.containerr {
+max-width: 1400px; /* Lebar maksimum kontainer lebih kecil dari sebelumnya */
+margin: 0 auto;   /* Menyusun kontainer di tengah halaman */
+padding: 10px;    /* Menambahkan sedikit padding untuk ruang di dalam */
+}
+
+
+.table-container {
+    position: relative;
+}
+
+.table-responsive {
+    background-color: #f4f7f6;
+}
+
+.pagination-container {
+    margin-top: 2rem;
+}
+
+.pagination .page-link {
+    border-radius: 20px;
+    margin: 0 2px;
+}
+
+.page-link:hover {
+    background-color: #d62268;
+    color: white;
+}
+
+.btn-outline-primary {
+    border-radius: 5px;
+}
+
+.filter-container select {
+    width: 120px;
+}

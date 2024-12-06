@@ -21,6 +21,7 @@ require '../database/koneksi.php'; // database
     <link rel="stylesheet" href="../asset/css/info.css">
     <link rel="stylesheet" href="../asset/css/login.css">
     <link rel="stylesheet" href="../asset/css/diagnosa.css">  
+    <link rel="stylesheet" href="../asset/css/riwayat.css">
 
 </head>
 <body>
