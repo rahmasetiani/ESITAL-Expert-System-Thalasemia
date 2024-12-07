@@ -8,9 +8,34 @@ if (!isset($_SESSION['email'])) {
     exit();
 }
 
-// Ambil data nama lengkap dan role berdasarkan email dari session
+include '../handler/pengguna/pagination-pengguna.php'; // Manage pagination and user listing
+?>
+
+<?php
+// Pagination setup
+$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10; // Default to 10 entries per page
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $limit;
+
+// Search query
+$searchQuery = isset($_GET['search']) ? trim($_GET['search']) : '';
+
+// Get total number of users for pagination
+$totalUsersQuery = "SELECT COUNT(*) as total FROM user WHERE namalengkap LIKE '%$searchQuery%' OR email LIKE '%$searchQuery%' OR role LIKE '%$searchQuery%'";
+$totalResult = mysqli_query($conn, $totalUsersQuery);
+$totalRow = mysqli_fetch_assoc($totalResult);
+$totalUsers = $totalRow['total'];
+$totalPages = ceil($totalUsers / $limit);
+
+// Query to fetch user data with search filter and pagination
+// Query untuk mendapatkan data pengguna dengan pengurutan terbaru (ID terbesar)
+$userQuery = "SELECT * FROM user WHERE namalengkap LIKE '%$searchQuery%' OR email LIKE '%$searchQuery%' OR role LIKE '%$searchQuery%' ORDER BY id DESC LIMIT $limit OFFSET $offset";
+$userResult = mysqli_query($conn, $userQuery);
+
+
+// Get logged-in user details
 $email = $_SESSION['email'];
-$query = "SELECT namalengkap, role FROM user WHERE email = '$email'";
+$query = "SELECT namalengkap, role, tanggal_lahir, jenis_kelamin, alamat FROM user WHERE email = '$email'";
 $result = mysqli_query($conn, $query);
 
 if ($row = mysqli_fetch_assoc($result)) {
@@ -26,110 +51,280 @@ if ($row = mysqli_fetch_assoc($result)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responsive Sidebar</title>
-    <!-- Bootstrap CSS -->
+    <title>Daftar Pengguna</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Font Awesome CDN -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../asset/css/admin.css">
+    <style>
+        .table {
+            margin-top: 20px;
+        }
+        .table th, .table td {
+            text-align: center;
+        }
+        .table-hover tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+        .pagination-container {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
 
 <!-- Sidebar -->
-<div id="sidebar" class="bg-dark">
-    <div class="sidebar-header d-flex flex-column align-items-center justify-content-center" style="height: 80px;">
-        <br>
-        <br>
-        <br>
-        <br>
-        <span class="nav-text text-white" style="color: #d62268; font-size: 1.25rem;">Selamat Datang</span>
-       <span class="nav-text" style="color: #d62268; font-size: 1.25rem;">
-        <?php
-        // Check the role and display it
-        if ($_SESSION['role'] == 1) { // Assuming 1 is for Admin
-            echo '<strong>ADMIN EXSITHAL</strong>'; // Bold text for Admin
-        } elseif ($_SESSION['role'] == 2) { // Assuming 2 is for Expert
-            echo '<strong>PAKAR EXSITHAL</strong>'; // Bold text for Expert
-        }
-        ?>
-    </span>
-        <br>
-        <br>
-    </div>
-    <br>
-    <br>
-    <nav class="nav flex-column">
-        <div class="nav-item">
-            <a href="#" class="nav-link">
-                <i class="bi bi-person-fill me-2"></i>
-                <span class="nav-text">Data Pengguna</span>
-            </a>
-        </div>
-        <div class="nav-item">
-            <a href="#" class="nav-link">
-                <i class="bi bi-heart-fill me-2"></i>
-                <span class="nav-text">Data Penyakit</span>
-            </a>
-        </div>
-        <div class="nav-item">
-            <a href="#" class="nav-link">
-                <i class="bi bi-emoji-smile-fill me-2"></i>
-                <span class="nav-text">Data Gejala</span>
-            </a>
-        </div>
-        <div class="nav-item">
-            <a href="#" class="nav-link">
-                <i class="bi bi-file-earmark-text-fill me-2"></i>
-                <span class="nav-text">Basis Kasus</span>
-            </a>
-        </div>
-    </nav>
-    <!-- Icon Buttons -->
-    <div class="icon-buttons">
-        <button id="toggleCollapse" class="btn" title="Collapse Sidebar">
-            <i class="bi bi-arrow-left-circle" style="font-size: 30px;"></i> <!-- Collapse icon -->
-        </button>
-        <button id="toggleExpand" class="btn" title="Expand Sidebar" style="display: none;"> <!-- Hide by default -->
-            <i class="bi bi-arrow-right-circle" style="font-size: 30px;"></i> <!-- Expand icon -->
-        </button>
-    </div>
-</div>
+<?php include 'sidebar.php'; ?>
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" style="margin-left: 250px; width: calc(100% - 250px); z-index: 10;">
-    <div class="container-fluid">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-person-circle me-2"></i>
-                        <?php echo $_SESSION['namalengkap']; ?>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li class="dropdown-item">
-                            <strong><?php echo $_SESSION['namalengkap']; ?></strong>
-                            <br>
-                            <small><?php echo $_SESSION['email']; ?></small>
-                        </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="../page/logout.php">Log Out</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+<?php include 'navbar.php'; ?>
 
 <!-- Page Content -->
 <div id="content" style="margin-top: 56px;">
-    <?php include 'dashboard.php'; // Include the content file ?>
+    <h2>Daftar Pengguna</h2>
+    
+     <!-- Add User and Search Section -->
+     <div class="d-flex justify-content-between align-items-center mt-4">
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addUserModal">
+            <i class="bi bi-person-plus"></i> Tambah Pengguna
+        </button>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-4">
+    <!-- Show Entries Section on the Left -->
+    <div class="d-flex align-items-center">
+        <label for="entriesSelect" class="me-2">Lihat</label>
+        <select id="entriesSelect" class="form-select w-auto" onchange="changeLimit(this.value)">
+            <option value="10" <?php if ($limit == 10) echo 'selected'; ?>>10</option>
+            <option value="20" <?php if ($limit == 20) echo 'selected'; ?>>20</option>
+            <option value="30" <?php if ($limit == 30) echo 'selected'; ?>>30</option>
+        </select>
+        <span class="ms-2 me-2">Baris</span>
+    </div>
+
+    <!-- Search Pengguna Section on the Right -->
+    <form method="GET" action="" class="d-flex align-items-center">
+        <input type="text" id="searchInput" name="search" value="<?= htmlspecialchars($searchQuery); ?>" class="form-control me-2" placeholder="Nama Pasien">
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-search"></i>
+        </button>
+    </form>
+</div>
+    
+    <!-- Tabel User -->
+    <div class="container mt-4">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Lengkap</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Tanggal Lahir</th>
+                    <th>Jenis Kelamin</th>
+                    <th>Alamat</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php
+               $counter = $offset + 1;
+               while ($user = mysqli_fetch_assoc($userResult)): ?>
+                   <tr>
+                       <td><?= $counter++; ?></td>
+                       <td><?= htmlspecialchars($user['namalengkap']); ?></td>
+                       <td><?= htmlspecialchars($user['email']); ?></td>
+                       <td>
+                           <?php
+                               switch ($user['role']) {
+                                   case 0: echo "Pasien"; break;
+                                   case 1: echo "Admin"; break;
+                                   case 2: echo "Pakar"; break;
+                                   default: echo "Unknown";
+                               }
+                           ?>
+                       </td>
+                       <td><?= htmlspecialchars(date('Y-m-d', strtotime($user['tanggal_lahir']))); ?></td>
+                       <td><?= htmlspecialchars($user['jenis_kelamin']); ?></td>
+                       <td><?= htmlspecialchars($user['alamat']); ?></td>
+                       <td>
+                                                      <!-- Add icons to buttons -->
+                                                      <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateModal-<?= $user['id']; ?>">
+                               <i class="fas fa-edit"></i> Ubah
+                           </button>
+                           <a href="../handler/pengguna/admin-hapuspengguna.php?id=<?= $user['id']; ?>" class="btn btn-danger" onclick="return confirm('Yakin ingin menghapus pengguna ini?');">
+                               <i class="fas fa-trash-alt"></i> Hapus
+                           </a>
+
+                       </td>
+                   </tr>
+
+                    <!-- Update Modal -->
+                    <div class="modal fade" id="updateModal-<?= $user['id']; ?>" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Ubah Pengguna</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form method="POST" action="../handler/pengguna/admin-ubahpengguna.php">
+                                    <div class="modal-body">
+                                        <input type="hidden" name="id" value="<?= $user['id']; ?>">
+                                        <div class="mb-3">
+                                            <label for="namalengkap" class="form-label">Nama Lengkap</label>
+                                            <input type="text" class="form-control" name="namalengkap" value="<?= htmlspecialchars($user['namalengkap']); ?>" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="email" class="form-label">Email</label>
+                                            <input type="email" class="form-control" name="email" value="<?= htmlspecialchars($user['email']); ?>" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="password" class="form-label">Password</label>
+                                            <input type="password" class="form-control" name="password">
+                                        </div>
+                                          <div class="mb-3">
+                                            <label for="role" class="form-label">Role</label>
+                                            <select name="role" class="form-select" required>
+                                            <option value="0" <?= $user['role'] == 0 ? 'selected' : ''; ?>>Pasien</option>
+                                                <option value="1" <?= $user['role'] == 1 ? 'selected' : ''; ?>>Admin</option>
+                                                <option value="2" <?= $user['role'] == 2 ? 'selected' : ''; ?>>Pakar</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
+                                            <input type="date" class="form-control" name="tanggal_lahir" value="<?= htmlspecialchars($user['tanggal_lahir']); ?>" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="jenis_kelamin" class="form-label">Jenis Kelamin</label>
+                                            <select name="jenis_kelamin" class="form-select" required>
+                                                <option value="Laki-laki" <?= $user['jenis_kelamin'] == "Laki-laki" ? 'selected' : ''; ?>>Laki-laki</option>
+                                                <option value="Perempuan" <?= $user['jenis_kelamin'] == "Perempuan" ? 'selected' : ''; ?>>Perempuan</option>
+                                            </select>
+                                            </div>
+                                        <div class="mb-3">
+                                            <label for="alamat" class="form-label">Alamat</label>
+                                            <textarea class="form-control" name="alamat" rows="3" required><?= htmlspecialchars($user['alamat']); ?></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                        <button type="submit" name="update_user" class="btn btn-primary">Simpan Perubahan</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                <?php endwhile; ?>
+            </tbody>
+        </table> 
+
+      <!-- Pagination -->
+    <div class="pagination-container">
+        <nav aria-label="Page navigation" class="pagination-container">
+            <ul class="pagination justify-content-center">
+                <li class="page-item <?= $page <= 1 ? 'disabled' : ''; ?>">
+                    <a class="page-link" href="?page=1&limit=<?= $limit; ?>&search=<?= htmlspecialchars($searchQuery); ?>" aria-label="First">
+                        <i class="fas fa-angle-double-left"></i> First
+                    </a>
+                </li>
+                <li class="page-item <?= $page <= 1 ? 'disabled' : ''; ?>">
+                    <a class="page-link" href="?page=<?= $page - 1; ?>&limit=<?= $limit; ?>&search=<?= htmlspecialchars($searchQuery); ?>" aria-label="Previous">
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </a>
+                </li>
+                <li class="page-item <?= $page >= $totalPages ? 'disabled' : ''; ?>">
+                    <a class="page-link" href="?page=<?= $page + 1; ?>&limit=<?= $limit; ?>&search=<?= htmlspecialchars($searchQuery); ?>" aria-label="Next">
+                        <i class="fas fa-chevron-right"></i> Next
+                    </a>
+                </li>
+                <li class="page-item <?= $page >= $totalPages ? 'disabled' : ''; ?>">
+                    <a class="page-link" href="?page=<?= $totalPages; ?>&limit=<?= $limit; ?>&search=<?= htmlspecialchars($searchQuery); ?>" aria-label="Last">
+                        <i class="fas fa-angle-double-right"></i> Last
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>      
+    </div>
+
+
+<!-- Add User Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addUserModalLabel">Tambah Pengguna</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="../handler/pengguna/admin-tambahpengguna.php">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="namalengkap" class="form-label">Nama Lengkap</label>
+                        <input type="text" class="form-control" name="namalengkap" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" name="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="role" class="form-label">Role</label>
+                        <select name="role" class="form-select" required>
+                            <option value="" disabled selected>Pilih Role</option>
+                            <option value="0">Pasien</option>
+                            <option value="1">Admin</option>
+                            <option value="2">Pakar</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
+                        <input type="date" class="form-control" name="tanggal_lahir" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="jenis_kelamin" class="form-label">Jenis Kelamin</label>
+                        <select name="jenis_kelamin" class="form-select" required>
+                        <option value="" disabled selected>Pilih Jenis Kelamin</option>
+
+                            <option value="Laki-laki">Laki-laki</option>
+                            <option value="Perempuan">Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="alamat" class="form-label">Alamat</label>
+                        <textarea class="form-control" name="alamat" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" name="add_user" class="btn btn-primary">Tambah Pengguna</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
-<!-- Bootstrap JS and Icons -->
+
+
+<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../asset/js/admin.js"></script>
+<script>
+    // Search function
+    function searchPengguna() {
+        const searchQuery = document.getElementById('searchInput').value;
+        window.location.href = ?page=1&limit=${document.getElementById('entriesSelect').value}&search=${searchQuery};
+    }
+    
+    // Change pagination limit
+    function changeLimit(limit) {
+        const searchQuery = document.getElementById('searchInput').value;
+        window.location.href = ?page=1&limit=${limit}&search=${searchQuery};
+    }
+</script>
+</body>
+</html>
 </body>
 </html>

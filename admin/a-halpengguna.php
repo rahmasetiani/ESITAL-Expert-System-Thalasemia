@@ -101,14 +101,14 @@ if ($row = mysqli_fetch_assoc($result)) {
         </select>
         <span class="ms-2 me-2">Baris</span>
     </div>
+   <!-- Search Pengguna Section on the Right -->
+<form method="GET" action="" class="d-flex align-items-center">
+    <input type="text" id="searchInput" name="search" value="<?= htmlspecialchars($searchQuery); ?>" class="form-control w-75 me-2" placeholder="Nama Pasien" onkeypress="if(event.key === 'Enter') searchPenyakit()">
+    <button type="submit" class="btn btn-primary">
+        <i class="fas fa-search"></i>
+    </button>
+</form>
 
-    <!-- Search Pengguna Section on the Right -->
-    <form method="GET" action="" class="d-flex align-items-center">
-        <input type="text" id="searchInput" name="search" value="<?= htmlspecialchars($searchQuery); ?>" class="form-control me-2" placeholder="Nama Pasien">
-        <button type="submit" class="btn btn-primary">
-            <i class="fas fa-search"></i>
-        </button>
-    </form>
 </div>
     
     <!-- Tabel User -->
