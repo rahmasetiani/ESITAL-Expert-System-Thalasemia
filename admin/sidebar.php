@@ -22,47 +22,56 @@
     <br>
     <nav class="nav flex-column">
     <div class="nav-item">
-        <a href="z-dashboard.php" class="nav-link">
-            <i class="bi bi-house-door-fill me-2"></i>
+        <a href="z-dashboard.php" class="nav-link d-flex align-items-center">
+            <i class="bi bi-house-door me-3" style="font-size: 1.25rem;"></i>
             <span class="nav-text">Dashboard</span>
         </a>
     </div>
     <div class="nav-item">
-        <a href="a-halpengguna.php" class="nav-link">
-            <i class="bi bi-person-fill me-2"></i>
+        <a href="a-halpengguna.php" class="nav-link d-flex align-items-center">
+            <i class="bi bi-person-circle me-3" style="font-size: 1.25rem;"></i>
             <span class="nav-text">Data Pengguna</span>
         </a>
     </div>
     <div class="nav-item">
-        <a href="b-halpenyakit.php" class="nav-link">
-            <i class="bi bi-heart-fill me-2"></i>
+        <a href="b-halpenyakit.php" class="nav-link d-flex align-items-center">
+            <i class="bi bi-heart me-3" style="font-size: 1.25rem;"></i>
             <span class="nav-text">Data Penyakit</span>
         </a>
     </div>
     <div class="nav-item">
-        <a href="c-halgejala.php" class="nav-link">
-            <i class="bi bi-emoji-smile-fill me-2"></i>
+        <a href="c-halgejala.php" class="nav-link d-flex align-items-center">
+            <i class="bi bi-symmetry-horizontal me-3" style="font-size: 1.25rem;"></i>
             <span class="nav-text">Data Gejala</span>
         </a>
     </div>
     <div class="nav-item">
-        <a href="d-halbasiskasus.php" class="nav-link">
-            <i class="bi bi-file-earmark-fill me-2"></i>
+        <a href="d-halbasiskasus.php" class="nav-link d-flex align-items-center">
+            <i class="bi bi-file-earmark me-3" style="font-size: 1.25rem;"></i>
             <span class="nav-text">Basis Kasus</span>
         </a>
     </div>
     <div class="nav-item">
-        <a href="e-halambangbatas.php" class="nav-link">
-            <i class="bi bi-clipboard-fill me-2"></i>
+        <a href="e-halambangbatas.php" class="nav-link d-flex align-items-center">
+            <i class="bi bi-arrow-up-right-circle me-3" style="font-size: 1.25rem;"></i>
             <span class="nav-text">Ambang Batas</span>
         </a>
     </div>
     <div class="nav-item">
-        <a href="f-halriwayatpasien.php" class="nav-link">
-            <i class="bi bi-clock-history me-2"></i>
-            <span class="nav-text">Riwayat Deteksi</span>
+        <a href="f-halriwayatpasien.php" class="nav-link d-flex align-items-center">
+            <i class="bi bi-clock-history me-3" style="font-size: 1.25rem;"></i>
+            <span class="nav-text">Data Riwayat Deteksi</span>
         </a>
     </div>
+    <div class="nav-item">
+        <a href="g-halrevisipakar.php" class="nav-link d-flex align-items-center">
+            <i class="bi bi-pencil-square me-3" style="font-size: 1.25rem;"></i>
+            <span class="nav-text">Data Butuh Revisi Pakar</span>
+        </a>
+    </div>
+</nav>
+
+
 </nav>
 
     <!-- Icon Buttons -->

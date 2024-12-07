@@ -1,13 +1,10 @@
 <?php 
 include 'header.php'; ?>
 
-<section class="py-5 text-center" style="padding: 0 20px;">
-    <div style="max-width: 900px; margin: 0 auto;">
-        <!-- Judul -->
-        <h2 class="navbar-brand large-text" 
-            style="margin-bottom: 1rem; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); text-align: center; color: #d62268; font-size: calc(1.5rem + 2vw); line-height: 1.2;">
-            Thalassemia Banyumas
-        </h2>
+<section class="py-5 text-center">
+        <h2 class="navbar-brand large-text" style="color: #d62268; margin-bottom: 1rem; text-shadow: 1px 1px 3px rgba(0,0,0,0.2); text-align: center; font-size: calc(1.5rem + 2vw);">
+        Thalassemia Banyumas
+    </h2>
 
         <!-- Subjudul -->
         <h3 style="color: #757375; margin-bottom: 2rem; text-align: center; font-size: calc(1rem + 1.5vw);">
@@ -39,19 +36,6 @@ section {
     padding: 60px 20px; /* Menambahkan padding lebih banyak untuk memberi ruang */
 }
 
-/* Styling untuk Judul */
-.navbar-brand.large-text {
-    margin-bottom: 1rem;
-    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.2);
-    text-align: center;
-    color: #d62268;
-    font-size: calc(1.5rem + 2vw);
-    line-height: 1.2;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
 
 p {
     text-align: justify;

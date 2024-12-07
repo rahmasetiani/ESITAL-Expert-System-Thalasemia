@@ -28,10 +28,8 @@ $totalUsers = $totalRow['total'];
 $totalPages = ceil($totalUsers / $limit);
 
 // Query to fetch user data with search filter and pagination
-// Query untuk mendapatkan data pengguna dengan pengurutan terbaru (ID terbesar)
-$userQuery = "SELECT * FROM user WHERE namalengkap LIKE '%$searchQuery%' OR email LIKE '%$searchQuery%' OR role LIKE '%$searchQuery%' ORDER BY id DESC LIMIT $limit OFFSET $offset";
+$userQuery = "SELECT * FROM user WHERE namalengkap LIKE '%$searchQuery%' OR email LIKE '%$searchQuery%' OR role LIKE '%$searchQuery%' LIMIT $limit OFFSET $offset";
 $userResult = mysqli_query($conn, $userQuery);
-
 
 // Get logged-in user details
 $email = $_SESSION['email'];
@@ -148,14 +146,8 @@ if ($row = mysqli_fetch_assoc($result)) {
                        <td><?= htmlspecialchars($user['jenis_kelamin']); ?></td>
                        <td><?= htmlspecialchars($user['alamat']); ?></td>
                        <td>
-                                                      <!-- Add icons to buttons -->
-                                                      <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateModal-<?= $user['id']; ?>">
-                               <i class="fas fa-edit"></i> Ubah
-                           </button>
-                           <a href="../handler/pengguna/admin-hapuspengguna.php?id=<?= $user['id']; ?>" class="btn btn-danger" onclick="return confirm('Yakin ingin menghapus pengguna ini?');">
-                               <i class="fas fa-trash-alt"></i> Hapus
-                           </a>
-
+                           <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateModal-<?= $user['id']; ?>">Ubah</button>
+                           <a href="../handler/pengguna/admin-hapuspengguna.php?id=<?= $user['id']; ?>" class="btn btn-danger" onclick="return confirm('Yakin ingin menghapus pengguna ini?');">Hapus</a>
                        </td>
                    </tr>
 
@@ -316,13 +308,13 @@ if ($row = mysqli_fetch_assoc($result)) {
     // Search function
     function searchPengguna() {
         const searchQuery = document.getElementById('searchInput').value;
-        window.location.href = ?page=1&limit=${document.getElementById('entriesSelect').value}&search=${searchQuery};
+        window.location.href = `?page=1&limit=${document.getElementById('entriesSelect').value}&search=${searchQuery}`;
     }
     
     // Change pagination limit
     function changeLimit(limit) {
         const searchQuery = document.getElementById('searchInput').value;
-        window.location.href = ?page=1&limit=${limit}&search=${searchQuery};
+        window.location.href = `?page=1&limit=${limit}&search=${searchQuery}`;
     }
 </script>
 </body>

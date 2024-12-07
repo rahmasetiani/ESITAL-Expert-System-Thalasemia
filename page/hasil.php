@@ -267,7 +267,6 @@ if ($penyakitData) {
 <style>
     /* Style untuk kontainer utama */
 .container {
-    max-width: 900px;
     margin: 0 auto;
 }
 
