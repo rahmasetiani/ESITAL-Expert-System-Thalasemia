@@ -18,6 +18,7 @@ include '../handler/basiskasus/pagination-basiskasus.php'; // Manage pagination 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar Basis Kasus</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Font Awesome CDN -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../asset/css/admin.css">
 </head>
@@ -32,26 +33,27 @@ include '../handler/basiskasus/pagination-basiskasus.php'; // Manage pagination 
     <!-- Add Basis Kasus Modal Trigger -->
     <div class="d-flex justify-content-between align-items-center mt-4">
         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addGejalaModal">
-            Tambah Basis Kasus
+        <i class="bi bi-person-plus"></i>Tambah Basis Kasus
         </button>
     </div>
 
     <div class="d-flex justify-content-between align-items-center mt-4">
         <!-- Show Entries Section on the Left -->
         <div class="d-flex align-items-center">
-            <label for="entriesSelect" class="me-2">Show</label>
+            <label for="entriesSelect" class="me-2">Lihat</label>
             <select id="entriesSelect" class="form-select w-auto" onchange="changeLimit(this.value)">
-                <option value="5" <?php if ($limit == 5) echo 'selected'; ?>>5</option>
                 <option value="10" <?php if ($limit == 10) echo 'selected'; ?>>10</option>
                 <option value="15" <?php if ($limit == 15) echo 'selected'; ?>>15</option>
+                <option value="20" <?php if ($limit == 20) echo 'selected'; ?>>20</option>
             </select>
-            <span class="ms-2 me-2">entries</span>
+            <span class="ms-2 me-2">Baris</span>
         </div>
 
         <!-- Search Gejala Section on the Right -->
         <div class="d-flex align-items-center">
-            <label for="searchInput" class="me-2">Search</label>
-            <input type="text" class="form-control w-75 me-2" placeholder="Cari gejala..." id="searchInput" value="<?php echo htmlspecialchars($searchQuery); ?>" onkeypress="if(event.key === 'Enter') searchBasisKasus()">
+            <input type="text" class="form-control w-75 me-2" placeholder="Basis Kasus Penyakit" id="searchInput" value="<?php echo htmlspecialchars($searchQuery); ?>" onkeypress="if(event.key === 'Enter') searchBasisKasus()">
+            <button type="submit" class="btn btn-primary">
+            <i class="fas fa-search"></i>
         </div>
     </div>
 
@@ -102,9 +104,12 @@ include '../handler/basiskasus/pagination-basiskasus.php'; // Manage pagination 
         </div>
     </div>
 
-    <!-- Data Table -->
-    <div class="container mt-4">
-    <table class="table table-striped">
+<!-- Tabel User -->
+<div class="container mt-4">
+        <!-- Add table-responsive class here -->
+        <div class="table-responsive">
+            <br>
+            <table class="table table-striped table-hover">
     <thead>
         <tr>
             <th class="text-center">No</th>
@@ -116,6 +121,8 @@ include '../handler/basiskasus/pagination-basiskasus.php'; // Manage pagination 
         </tr>
     </thead>
     <tbody>
+    <?php if (mysqli_num_rows($basiskasusResult) > 0): ?>
+
     <?php $counter = $startNumber; while ($row = mysqli_fetch_assoc($basiskasusResult)): ?>
 
         <tr>
@@ -157,8 +164,8 @@ include '../handler/basiskasus/pagination-basiskasus.php'; // Manage pagination 
                     ?>
                 </td>
                 <td class="text-center">
-                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal-<?php echo htmlspecialchars($row['kodebasiskasus']); ?>">Ubah</button>
-                    <a href="../handler/basiskasus/admin-hapusbasiskasus.php?kodebasiskasus=<?php echo htmlspecialchars($row['kodebasiskasus']); ?>" class="btn btn-danger" onclick="return confirm('Yakin ingin menghapus data ini?')">Hapus</a>
+                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editModal-<?php echo htmlspecialchars($row['kodebasiskasus']); ?>"> <i class="fas fa-edit"></i> </button>
+                    <a href="../handler/basiskasus/admin-hapusbasiskasus.php?kodebasiskasus=<?php echo htmlspecialchars($row['kodebasiskasus']); ?>" class="btn btn-danger" onclick="return confirm('Yakin ingin menghapus data ini?')"><i class="fas fa-trash-alt"></i></a>
                 </td>
             </tr>
             <!-- Edit Modal -->
@@ -214,28 +221,42 @@ include '../handler/basiskasus/pagination-basiskasus.php'; // Manage pagination 
                 </div>
             </div>
         <?php endwhile; ?>
+        <?php else: ?>
+                    <tr>
+                        <td colspan="6" class="text-center">Tidak ada basis kasus yang tersedia.</td>
+                    </tr>
+        <?php endif; ?>
     </tbody>
-</table>
+</table> <br>
+</div>
+</div>
            <!-- Pagination Controls -->
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center">
-            <li class="page-item <?php if ($page <= 1) echo 'disabled'; ?>">
-                <a class="page-link" href="?page=<?php echo max($page - 1, 1); ?>&limit=<?php echo $limit; ?>&search=<?php echo htmlspecialchars($searchQuery); ?>" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                <li class="page-item <?php if ($i == $page) echo 'active'; ?>">
-                    <a class="page-link" href="?page=<?php echo $i; ?>&limit=<?php echo $limit; ?>&search=<?php echo htmlspecialchars($searchQuery); ?>"><?php echo $i; ?></a>
+           <div class="pagination-container">
+           <nav aria-label="Page navigation" class="pagination-container">
+            <ul class="pagination justify-content-center">
+                <li class="page-item <?= $page <= 1 ? 'disabled' : ''; ?>">
+                    <a class="page-link" href="?page=1&limit=<?= $limit; ?>&search=<?= htmlspecialchars($searchQuery); ?>" aria-label="First">
+                        <i class="fas fa-angle-double-left"></i> First
+                    </a>
                 </li>
-            <?php endfor; ?>
-            <li class="page-item <?php if ($page >= $totalPages) echo 'disabled'; ?>">
-                <a class="page-link" href="?page=<?php echo min($page + 1, $totalPages); ?>&limit=<?php echo $limit; ?>&search=<?php echo htmlspecialchars($searchQuery); ?>" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+                <li class="page-item <?= $page <= 1 ? 'disabled' : ''; ?>">
+                    <a class="page-link" href="?page=<?= $page - 1; ?>&limit=<?= $limit; ?>&search=<?= htmlspecialchars($searchQuery); ?>" aria-label="Previous">
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </a>
+                </li>
+                <li class="page-item <?= $page >= $totalPages ? 'disabled' : ''; ?>">
+                    <a class="page-link" href="?page=<?= $page + 1; ?>&limit=<?= $limit; ?>&search=<?= htmlspecialchars($searchQuery); ?>" aria-label="Next">
+                        <i class="fas fa-chevron-right"></i> Next
+                    </a>
+                </li>
+                <li class="page-item <?= $page >= $totalPages ? 'disabled' : ''; ?>">
+                    <a class="page-link" href="?page=<?= $totalPages; ?>&limit=<?= $limit; ?>&search=<?= htmlspecialchars($searchQuery); ?>" aria-label="Last">
+                        <i class="fas fa-angle-double-right"></i> Last
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        </div>
     </div>
 </div>
 

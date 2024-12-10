@@ -2,7 +2,7 @@
 require '../database/koneksi.php';
 
 // Set default values for pagination and search
-$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 5;
+$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $searchQuery = isset($_GET['search']) ? $_GET['search'] : '';
 

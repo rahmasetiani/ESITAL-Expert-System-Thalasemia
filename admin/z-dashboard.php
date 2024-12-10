@@ -39,7 +39,7 @@ $count_riwayat_deteksi_query = "SELECT COUNT(*) AS riwayat_deteksi_count FROM ha
 $count_riwayat_deteksi = mysqli_fetch_assoc(mysqli_query($conn, $count_riwayat_deteksi_query))['riwayat_deteksi_count'];
 
 // Query untuk menghitung jumlah Data Butuh Revisi Pakar (hasil_similarity NULL)
-$count_revisi_pakar_query = "SELECT COUNT(*) AS revisi_pakar_count FROM hasil WHERE hasil_similarity IS NULL";
+$count_revisi_pakar_query = "SELECT COUNT(*) AS revisi_pakar_count FROM hasil WHERE hasil_similarity IS NULL AND status_revisi = 'pending'";
 $count_revisi_pakar = mysqli_fetch_assoc(mysqli_query($conn, $count_revisi_pakar_query))['revisi_pakar_count'];
 
 

@@ -1,8 +1,8 @@
 <?php
 require '../database/koneksi.php';
 
-// Set pagination defaults
-$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 5;
+// Pagination setup
+$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10; // Default to 10 entries per page
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $limit;
 
@@ -16,11 +16,13 @@ $totalRow = mysqli_fetch_assoc($totalResult);
 $totalUsers = $totalRow['total'];
 $totalPages = ceil($totalUsers / $limit);
 
-// Query for user list
-$userQuery = "SELECT * FROM user WHERE namalengkap LIKE '%$searchQuery%' OR email LIKE '%$searchQuery%' OR role LIKE '%$searchQuery%' LIMIT $limit OFFSET $offset";
+// Query to fetch user data with search filter and pagination
+// Query untuk mendapatkan data pengguna dengan pengurutan terbaru (ID terbesar)
+$userQuery = "SELECT * FROM user WHERE namalengkap LIKE '%$searchQuery%' OR email LIKE '%$searchQuery%' OR role LIKE '%$searchQuery%' ORDER BY id DESC LIMIT $limit OFFSET $offset";
 $userResult = mysqli_query($conn, $userQuery);
 
-// Ambil data nama lengkap dan role berdasarkan email dari session
+
+// Get logged-in user details
 $email = $_SESSION['email'];
 $query = "SELECT namalengkap, role, tanggal_lahir, jenis_kelamin, alamat FROM user WHERE email = '$email'";
 $result = mysqli_query($conn, $query);

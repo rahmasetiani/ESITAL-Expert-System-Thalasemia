@@ -10,34 +10,6 @@ if (!isset($_SESSION['email'])) {
 include '../handler/penyakit/pagination-penyakit.php'; // Manage pagination and user listing
 ?>
 
-
-<?php
- // Define pagination variables
-$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10; // Default limit
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$offset = ($page - 1) * $limit;
-
-// Search query
-$searchQuery = isset($_GET['search']) ? trim($_GET['search']) : '';
-
-// Build the query based on the search query
-$searchCondition = !empty($searchQuery) ? "WHERE namapenyakit LIKE '%" . mysqli_real_escape_string($conn, $searchQuery) . "%'" : '';
-$query = "SELECT * FROM penyakit $searchCondition LIMIT $limit OFFSET $offset";
-
-// Execute the query and check for errors
-$penyakitResult = mysqli_query($conn, $query);
-if (!$penyakitResult) {
-    die("Query failed: " . mysqli_error($conn));
-}
-
-// Fetch total rows for pagination
-$totalQuery = "SELECT COUNT(*) AS total FROM penyakit $searchCondition";
-$totalResult = mysqli_query($conn, $totalQuery);
-$totalRow = mysqli_fetch_assoc($totalResult);
-$totalPages = ceil($totalRow['total'] / $limit);
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -98,134 +70,137 @@ $totalPages = ceil($totalRow['total'] / $limit);
         </div>
     </div>
 
+    <!-- Tabel User -->
     <div class="container mt-4">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th class="text-center">No</th>
-                    <th class="text-center">Kode Penyakit</th>
-                    <th class="text-center">Nama Penyakit</th>
-                    <th class="text-center">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (mysqli_num_rows($penyakitResult) > 0): ?>
-                    <?php $counter = $offset + 1; ?>
-                    <?php while ($penyakit = mysqli_fetch_assoc($penyakitResult)): ?>
-                        <tr>
-                            <td class="text-center"><?php echo $counter++; ?></td>
-                            <td class="text-center"><?php echo htmlspecialchars($penyakit['kodepenyakit']); ?></td>
-                            <td class="text-center"><?php echo htmlspecialchars($penyakit['namapenyakit']); ?></td>
-                            <td class="text-center">
-                                <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#detailModal-<?php echo $penyakit['kodepenyakit']; ?>"><i class="fas fa-info-circle"></i> Detail</button>
-                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateModal-<?php echo $penyakit['kodepenyakit']; ?>"> <i class="fas fa-edit"></i> Ubah</button>
-                                <a href="../handler/penyakit/admin-hapuspenyakit.php?kodepenyakit=<?php echo $penyakit['kodepenyakit']; ?>&limit=<?php echo $limit; ?>&page=<?php echo $page; ?>&search=<?php echo htmlspecialchars($searchQuery); ?>" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus penyakit ini?');"><i class="fas fa-trash-alt"></i> Hapus</a>
-                            </td>
-                        </tr>
-
-<!-- Detail Modal -->
-<div class="modal fade" id="detailModal-<?php echo $penyakit['kodepenyakit']; ?>" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-md"> <!-- Narrower modal width with modal-md -->
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Detail Penyakit</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Display the image centered and with a fixed size -->
-                <div class="text-center mb-3">
-                    <img src="../asset/image/penyakit/<?php echo htmlspecialchars($penyakit['foto']); ?>" 
-                         alt="<?php echo htmlspecialchars($penyakit['namapenyakit']); ?>" 
-                         class="img-fluid rounded border" 
-                         style="width: 100%; max-width: 150px;"> <!-- Adjusted image size -->
-                </div>
-
-                <!-- Display disease code and name -->
-                <p><strong>Kode Penyakit:</strong> <?php echo htmlspecialchars($penyakit['kodepenyakit']); ?></p>
-                <p><strong>Nama Penyakit:</strong> <?php echo htmlspecialchars($penyakit['namapenyakit']); ?></p>
-
-                <!-- Deskripsi and Solusi Pengobatan sections with limited height and vertical scrolling -->
-                <div class="container">
-                    <div class="row mb-3">
-                        <div class="col-12">
-                            <strong>Deskripsi:</strong>
-                            <div class="p-2 border rounded" 
-                                 style="max-height: 150px; overflow-y: auto; white-space: pre-wrap;">
-                                <?php echo nl2br(htmlspecialchars($penyakit['deskripsi'])); ?>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <strong>Solusi Pengobatan:</strong>
-                            <div class="p-2 border rounded" 
-                                 style="max-height: 150px; overflow-y: auto; white-space: pre-wrap;">
-                                <?php echo nl2br(htmlspecialchars($penyakit['solusipengobatan'])); ?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-            </div>
-        </div>
-    </div>
-</div>
-                       
-
-
-                        <!-- Update Modal -->
-<div class="modal fade" id="updateModal-<?php echo $penyakit['kodepenyakit']; ?>" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form method="POST" action="../handler/penyakit/admin-ubahpenyakit.php" enctype="multipart/form-data">
-                <div class="modal-header">
-                    <h5 class="modal-title">Ubah Penyakit</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="namapenyakit" class="form-label">Nama Penyakit</label>
-                        <input type="text" class="form-control" name="namapenyakit" value="<?php echo htmlspecialchars($penyakit['namapenyakit']); ?>" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="deskripsi" class="form-label">Deskripsi</label>
-                        <textarea class="form-control" name="deskripsi" rows="3" required><?php echo htmlspecialchars($penyakit['deskripsi']); ?></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="solusi" class="form-label">Solusi Pengobatan</label>
-                        <textarea class="form-control" name="solusipengobatan" rows="3" required><?php echo htmlspecialchars($penyakit['solusipengobatan']); ?></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="gambar" class="form-label">Gambar</label>
-                        <input type="file" class="form-control" name="foto">
-                        <small class="text-muted">Biarkan kosong jika tidak ingin mengubah gambar.</small>
-                    </div>
-                    <input type="hidden" name="kodepenyakit" value="<?php echo htmlspecialchars($penyakit['kodepenyakit']); ?>">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-                    <?php endwhile; ?>
-                <?php else: ?>
+        <!-- Add table-responsive class here -->
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
                     <tr>
-                        <td colspan="4" class="text-center">Tidak ada data penyakit yang tersedia.</td>
+                        <th class="text-center">No</th>
+                        <th class="text-center">Kode Penyakit</th>
+                        <th class="text-center">Nama Penyakit</th>
+                        <th class="text-center">Deskripsi Penyakit</th>
+                        <th class="text-center">Solusi Pengobatan</th>
+                        <th class="text-center">Aksi</th>
                     </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php if (mysqli_num_rows($penyakitResult) > 0): ?>
+                        <?php $counter = $offset + 1; ?>
+                        <?php while ($penyakit = mysqli_fetch_assoc($penyakitResult)): ?>
+                            <tr>
+                                <td class="text-center"><?php echo $counter++; ?></td>
+                                <td class="text-center"><?php echo htmlspecialchars($penyakit['kodepenyakit']); ?></td>
+                                <td class="text-center"><?php echo htmlspecialchars($penyakit['namapenyakit']); ?></td>
+                                <td class="text-center"><?php echo htmlspecialchars($penyakit['deskripsi']); ?></td>
+                                <td class="text-center"><?php echo htmlspecialchars($penyakit['solusipengobatan']); ?></td>
+                                <td class="text-center">
+                                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateModal-<?php echo $penyakit['kodepenyakit']; ?>"> <i class="fas fa-edit"></i> </button>
+                                    <a href="../handler/penyakit/admin-hapuspenyakit.php?kodepenyakit=<?php echo $penyakit['kodepenyakit']; ?>&limit=<?php echo $limit; ?>&page=<?php echo $page; ?>&search=<?php echo htmlspecialchars($searchQuery); ?>" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus penyakit ini?');"><i class="fas fa-trash-alt"></i> </a>
+                                </td>
+                            </tr>
+
+                            <!-- Detail Modal -->
+                            <div class="modal fade" id="detailModal-<?php echo $penyakit['kodepenyakit']; ?>" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-md"> <!-- Narrower modal width with modal-md -->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Detail Penyakit</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <!-- Display the image centered and with a fixed size -->
+                                            <div class="text-center mb-3">
+                                                <img src="../asset/image/penyakit/<?php echo htmlspecialchars($penyakit['foto']); ?>" 
+                                                     alt="<?php echo htmlspecialchars($penyakit['namapenyakit']); ?>" 
+                                                     class="img-fluid rounded border" 
+                                                     style="width: 100%; max-width: 150px;"> <!-- Adjusted image size -->
+                                            </div>
+
+                                            <!-- Display disease code and name -->
+                                            <p><strong>Kode Penyakit:</strong> <?php echo htmlspecialchars($penyakit['kodepenyakit']); ?></p>
+                                            <p><strong>Nama Penyakit:</strong> <?php echo htmlspecialchars($penyakit['namapenyakit']); ?></p>
+
+                                            <!-- Deskripsi and Solusi Pengobatan sections with limited height and vertical scrolling -->
+                                            <div class="container">
+                                                <div class="row mb-3">
+                                                    <div class="col-12">
+                                                        <strong>Deskripsi:</strong>
+                                                        <div class="p-2 border rounded" 
+                                                             style="max-height: 150px; overflow-y: auto; white-space: pre-wrap;">
+                                                            <?php echo nl2br(htmlspecialchars($penyakit['deskripsi'])); ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <strong>Solusi Pengobatan:</strong>
+                                                        <div class="p-2 border rounded" 
+                                                             style="max-height: 150px; overflow-y: auto; white-space: pre-wrap;">
+                                                            <?php echo nl2br(htmlspecialchars($penyakit['solusipengobatan'])); ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Update Modal -->
+                            <div class="modal fade" id="updateModal-<?php echo $penyakit['kodepenyakit']; ?>" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <form method="POST" action="../handler/penyakit/admin-ubahpenyakit.php" enctype="multipart/form-data">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Ubah Penyakit</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="mb-3">
+                                                    <label for="namapenyakit" class="form-label">Nama Penyakit</label>
+                                                    <input type="text" class="form-control" name="namapenyakit" value="<?php echo htmlspecialchars($penyakit['namapenyakit']); ?>" required>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="deskripsi" class="form-label">Deskripsi</label>
+                                                    <textarea class="form-control" name="deskripsi" rows="3" required><?php echo htmlspecialchars($penyakit['deskripsi']); ?></textarea>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="solusi" class="form-label">Solusi Pengobatan</label>
+                                                    <textarea class="form-control" name="solusipengobatan" rows="3" required><?php echo htmlspecialchars($penyakit['solusipengobatan']); ?></textarea>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="gambar" class="form-label">Gambar</label>
+                                                    <input type="file" class="form-control" name="foto">
+                                                    <small class="text-muted">Biarkan kosong jika tidak ingin mengubah gambar.</small>
+                                                </div>
+                                                <input type="hidden" name="kodepenyakit" value="<?php echo htmlspecialchars($penyakit['kodepenyakit']); ?>">
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="6" class="text-center">Tidak ada data penyakit yang tersedia.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- Pagination Controls -->
-<!-- Pagination -->
-<div class="pagination-container">
+    <div class="pagination-container">
         <nav aria-label="Page navigation" class="pagination-container">
             <ul class="pagination justify-content-center">
                 <li class="page-item <?= $page <= 1 ? 'disabled' : ''; ?>">
@@ -250,7 +225,7 @@ $totalPages = ceil($totalRow['total'] / $limit);
                 </li>
             </ul>
         </nav>
-    </div>      
+    </div> 
 
     <!-- Add Penyakit Modal -->
     <div class="modal fade" id="addPenyakitModal" tabindex="-1" aria-hidden="true">

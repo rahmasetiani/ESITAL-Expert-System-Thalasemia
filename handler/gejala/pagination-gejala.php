@@ -14,7 +14,7 @@ if ($row = mysqli_fetch_assoc($result)) {
 }
 
 // Pagination and listing logic
-$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 5; // Default limit
+$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10; // Default limit
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Current page
 $offset = ($page - 1) * $limit;
 $searchQuery = isset($_GET['search']) ? $_GET['search'] : ''; // Current search query

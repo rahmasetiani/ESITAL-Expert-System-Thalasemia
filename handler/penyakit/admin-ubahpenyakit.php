@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             " WHERE kodepenyakit = '$kodepenyakit'";
 
         if (mysqli_query($conn, $updateQuery)) {
-            header("Location: ../../admin/b-halpenyakit.php?limit=5&page=1&search=");
+            header("Location: ../../admin/b-halpenyakit.php?limit=10&page=1&search=");
             exit();
         } else {
             echo "Error updating record: " . mysqli_error($conn);

@@ -14,7 +14,7 @@ $filter_date = isset($_GET['filter_date']) ? $_GET['filter_date'] : '';
 $filter_name = isset($_GET['filter_name']) ? $_GET['filter_name'] : '';
 
 // Menentukan batasan jumlah data per halaman
-$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 5;
+$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $limit;
 
@@ -90,34 +90,6 @@ $total_pages = ceil($total_records / $limit);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Font Awesome CDN -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../asset/css/admin.css">
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-        }
-        .pagination-container {
-            margin-top: 20px;
-        }
-        .form-select, .form-control {
-            max-width: 150px;
-        }
-        .table th, .table td {
-            text-align: center;
-        }
-        .btn-custom {
-            padding: 8px 15px;
-            font-size: 14px;
-        }
-        .filter-form input, .filter-form button {
-            margin-left: 10px;
-        }
-        .page-item.disabled .page-link {
-            background-color: #f1f1f1;
-            border-color: #ddd;
-        }
-        .card-body {
-            overflow-x: auto;
-        }
-    </style>
 </head>
 <body>
 <?php include 'sidebar.php'; ?>
@@ -126,13 +98,13 @@ $total_pages = ceil($total_records / $limit);
 <div id="content" style="margin-top: 56px;">
     <h2>Daftar Riwayat Deteksi</h2>
 
-    <div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mt-4">
         <div class="d-flex align-items-center mb-4">
             <label for="entriesSelect" class="me-2">Lihat</label>
             <select id="entriesSelect" class="form-select w-auto" onchange="changeLimit(this.value)">
-                <option value="5" <?php if ($limit == 5) echo 'selected'; ?>>5</option>
                 <option value="10" <?php if ($limit == 10) echo 'selected'; ?>>10</option>
                 <option value="15" <?php if ($limit == 15) echo 'selected'; ?>>15</option>
+                <option value="20" <?php if ($limit == 20) echo 'selected'; ?>>20</option>
             </select>
             <span class="ms-2 me-2">Baris</span>
         </div>
@@ -142,14 +114,17 @@ $total_pages = ceil($total_records / $limit);
             <input type="date" name="filter_date" value="<?= htmlspecialchars($filter_date); ?>" class="form-control me-2">
             <input type="text" name="filter_name" value="<?= htmlspecialchars($filter_name); ?>" class="form-control me-2" placeholder="Nama Pasien">
             <button type="submit" class="btn btn-primary btn-custom">
-                <i class="fas fa-search"></i> Cari
+                <i class="fas fa-search"></i> 
             </button>
         </form>
+        </div>
 
-        <!-- Tabel untuk menampilkan semua hasil -->
-        <div class="card-body">
-            <table class="table table-bordered">
-                <thead class="table-light">
+     <!-- Tabel User -->
+    <div class="container mt-4">
+        <!-- Add table-responsive class here -->
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
                     <tr>
                         <th>No</th>
                         <th>Nama Pasien</th>
@@ -157,11 +132,11 @@ $total_pages = ceil($total_records / $limit);
                         <th>Gejala Terpilih</th>
                         <th>Hasil Diagnosa</th>
                         <th>Similarity</th>
-                        <th>Dokumen</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
+                <?php if (mysqli_num_rows(result: $result) > 0): ?>
                     <?php 
                     $no = 1;
                     foreach ($allResults as $result) {
@@ -169,25 +144,33 @@ $total_pages = ceil($total_records / $limit);
                                 <td>" . $no++ . "</td>
                                 <td>" . htmlspecialchars($result['nama_pasien']) . "</td>
                                 <td>" . htmlspecialchars($result['created_at']) . "</td>
-                                <td>" . htmlspecialchars($result['gejala_terpilih']) . "</td>
+                                <td>";
+                            // Menampilkan gejala dengan setiap elemen pada baris baru
+                            $gejalaArray = explode(',', $result['gejala_terpilih']);
+                            echo implode('<br>', array_map('trim', $gejalaArray));
+                            echo "</td>                               
                                 <td>" . htmlspecialchars($result['hasil_diagnosa']) . "</td>
                                 <td>" . htmlspecialchars($result['hasil_similarity']) . "%</td>
                                 <td>
-                                    <a href='../page/cetak_hasillangsung.php?idhasil=" . $result['idhasil'] . "' class='btn btn-outline-primary'>
-                                        <i class='fas fa-print'></i> Cetak
+                                    <a href='../page/cetak_hasillangsung.php?idhasil=" . $result['idhasil'] . "' class='btn btn-primary'>
+                                        <i class='fas fa-print'></i>
                                     </a>
-                                </td>
-                                <td>
-                                    <a href='?delete_id=" . $result['idhasil'] . "' class='btn btn-outline-danger' onclick='return confirm(\"Apakah Anda yakin ingin menghapus riwayat ini?\")'>
-                                        <i class='fas fa-trash-alt'></i> Hapus
+                                    <a href='../handler/riwayathasil/admin-hapusriwayat.php?idhasil=" . $result['idhasil'] ."' class='btn btn-danger' onclick='return confirm(\"Apakah Anda yakin ingin menghapus riwayat ini?\")'>
+                                        <i class='fas fa-trash-alt'></i> 
                                     </a>
                                 </td>
                               </tr>";
                     }
                     ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="7" class="text-center">Tidak ada data riwayat deteksi yang tersedia.</td>
+                        </tr>
+                    <?php endif; ?>
                 </tbody>
-            </table>
+            </table> <br>
         </div>
+    </div>
 
         <!-- Navigasi Paginasi -->
         <nav aria-label="Page navigation" class="pagination-container">
@@ -214,8 +197,6 @@ $total_pages = ceil($total_records / $limit);
                 </li>
             </ul>
         </nav>
-    </div>
-</div>
 
 <!-- JavaScript untuk mengubah limit per halaman -->
 <script>

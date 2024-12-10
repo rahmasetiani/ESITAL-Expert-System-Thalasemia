@@ -120,8 +120,8 @@ if ($penyakitData) {
                     <?php 
                     echo htmlspecialchars($lastResultMessage['hasil_diagnosa']);
                     
-                    // Cek jika hasil diagnosa adalah "Tidak Teridentifikasi Penyakit Thalassemia dan Penyakit Serupa"
-                    if ($lastResultMessage['hasil_diagnosa'] == "Tidak Teridentifikasi Penyakit Thalassemia dan Penyakit Serupa") {
+                    // Cek jika hasil diagnosa adalah "Tidak Teridentifikasi Penyakit Thalassemia"
+                    if ($lastResultMessage['hasil_diagnosa'] == "Tidak Teridentifikasi Penyakit Thalassemia") {
                         echo "<br>Namun, gejala yang Anda alami akan kami tinjau ulang bersama pakar untuk memastikan hasil diagnosa lebih akurat.";
                     }
                     ?>

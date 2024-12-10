@@ -14,12 +14,12 @@ $filter_date = isset($_GET['filter_date']) ? $_GET['filter_date'] : '';
 $filter_name = isset($_GET['filter_name']) ? $_GET['filter_name'] : '';
 
 // Menentukan batasan jumlah data per halaman
-$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 5;
+$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $limit;
 
 // Query untuk mengambil data dengan filter tanggal dan nama
-$query = "SELECT * FROM hasil WHERE hasil_similarity IS NULL";
+$query = "SELECT * FROM hasil WHERE hasil_similarity IS NULL AND status_revisi = 'pending'";
 
 // Filter berdasarkan tanggal
 if ($filter_date) {
@@ -34,6 +34,9 @@ if ($filter_name) {
 
 // Tambahkan limit dan offset untuk paginasi
 $query .= " LIMIT ? OFFSET ?";
+
+
+// Eksekusi query
 $stmt = $conn->prepare($query);
 
 // Bind parameter
@@ -53,6 +56,23 @@ $result = $stmt->get_result();
 // Menyimpan semua hasil ke dalam array
 $allResults = [];
 while ($row = $result->fetch_assoc()) {
+    // Menyaring hasil diagnosa dengan similarity tertinggi
+    $keseluruhan_diagnosa = json_decode($row['keseluruhan_diagnosa'], true);
+    $keseluruhan_similarity = json_decode($row['keseluruhan_similarity'], true);
+    
+    if (is_array($keseluruhan_similarity) && !empty($keseluruhan_similarity)) {
+        // Mengambil nilai similarity tertinggi
+        $max_similarity_index = array_keys($keseluruhan_similarity, max($keseluruhan_similarity))[0];
+        $highest_similarity = $keseluruhan_similarity[$max_similarity_index];
+        $highest_diagnosis = $keseluruhan_diagnosa[$max_similarity_index];
+    } else {
+        $highest_similarity = 'N/A';  // Jika tidak ada similarity
+        $highest_diagnosis = 'N/A';  // Jika tidak ada diagnosa
+    }
+
+    // Tambahkan data yang telah diproses ke array
+    $row['hasil_diagnosa_tertinggi'] = $highest_diagnosis;
+    $row['hasil_similarity_tertinggi'] = $highest_similarity;
     $allResults[] = $row;
 }
 
@@ -85,54 +105,26 @@ $total_pages = ceil($total_records / $limit);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Riwayat Pasien</title>
+    <title>Butuh Revisi Pakar</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Font Awesome CDN -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../asset/css/admin.css">
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-        }
-        .pagination-container {
-            margin-top: 20px;
-        }
-        .form-select, .form-control {
-            max-width: 150px;
-        }
-        .table th, .table td {
-            text-align: center;
-        }
-        .btn-custom {
-            padding: 8px 15px;
-            font-size: 14px;
-        }
-        .filter-form input, .filter-form button {
-            margin-left: 10px;
-        }
-        .page-item.disabled .page-link {
-            background-color: #f1f1f1;
-            border-color: #ddd;
-        }
-        .card-body {
-            overflow-x: auto;
-        }
-    </style>
 </head>
 <body>
 <?php include 'sidebar.php'; ?>
 <?php include 'navbar.php'; ?>
 
 <div id="content" style="margin-top: 56px;">
-    <h2>Daftar Riwayat Deteksi</h2>
+    <h2>Daftar Butuh Revisi Pakar</h2>
 
-    <div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mt-4">
         <div class="d-flex align-items-center mb-4">
             <label for="entriesSelect" class="me-2">Lihat</label>
             <select id="entriesSelect" class="form-select w-auto" onchange="changeLimit(this.value)">
-                <option value="5" <?php if ($limit == 5) echo 'selected'; ?>>5</option>
                 <option value="10" <?php if ($limit == 10) echo 'selected'; ?>>10</option>
                 <option value="15" <?php if ($limit == 15) echo 'selected'; ?>>15</option>
+                <option value="20" <?php if ($limit == 20) echo 'selected'; ?>>20</option>
             </select>
             <span class="ms-2 me-2">Baris</span>
         </div>
@@ -142,51 +134,63 @@ $total_pages = ceil($total_records / $limit);
             <input type="date" name="filter_date" value="<?= htmlspecialchars($filter_date); ?>" class="form-control me-2">
             <input type="text" name="filter_name" value="<?= htmlspecialchars($filter_name); ?>" class="form-control me-2" placeholder="Nama Pasien">
             <button type="submit" class="btn btn-primary btn-custom">
-                <i class="fas fa-search"></i> Cari
+                <i class="fas fa-search"></i> 
             </button>
         </form>
+        </div>
 
         <!-- Tabel untuk menampilkan semua hasil -->
-        <div class="card-body">
-            <table class="table table-bordered">
-                <thead class="table-light">
+        <div class="container mt-4">
+        <!-- Make the table responsive on smaller screens -->
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
                     <tr>
                         <th>No</th>
                         <th>Nama Pasien</th>
                         <th>Tanggal Pemeriksaan</th>
                         <th>Gejala Terpilih</th>
-                        <th>Hasil Diagnosa</th>
+                        <th>Hasil Diagnosa Tertinggi</th>
                         <th>Similarity</th>
-                        <th>Dokumen</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php 
-                    $no = 1;
-                    foreach ($allResults as $result) {
-                        echo "<tr>
-                                <td>" . $no++ . "</td>
-                                <td>" . htmlspecialchars($result['nama_pasien']) . "</td>
-                                <td>" . htmlspecialchars($result['created_at']) . "</td>
-                                <td>" . htmlspecialchars($result['gejala_terpilih']) . "</td>
-                                <td>" . htmlspecialchars($result['hasil_diagnosa']) . "</td>
-                                <td>" . htmlspecialchars($result['hasil_similarity']) . "%</td>
-                                <td>
-                                    <a href='../page/cetak_hasillangsung.php?idhasil=" . $result['idhasil'] . "' class='btn btn-outline-primary'>
-                                        <i class='fas fa-print'></i> Cetak
-                                    </a>
-                                </td>
-                                <td>
-                                    <a href='?delete_id=" . $result['idhasil'] . "' class='btn btn-outline-danger' onclick='return confirm(\"Apakah Anda yakin ingin menghapus riwayat ini?\")'>
-                                        <i class='fas fa-trash-alt'></i> Hapus
-                                    </a>
-                                </td>
-                              </tr>";
-                    }
-                    ?>
-                </tbody>
-            </table>
+                <?php if (mysqli_num_rows(result: $result) > 0): ?>
+
+    <?php 
+    $no = 1;
+    foreach ($allResults as $result) {
+        echo "<tr>
+                <td>" . $no++ . "</td>
+                <td>" . htmlspecialchars($result['nama_pasien']) . "</td>
+                <td>" . htmlspecialchars($result['created_at']) . "</td>
+                <td>";
+                    // Menampilkan gejala dengan setiap elemen pada baris baru
+                    $gejalaArray = explode(',', $result['gejala_terpilih']);
+                    echo implode('<br>', array_map('trim', $gejalaArray));
+        echo "</td>
+                <td>" . htmlspecialchars($result['hasil_diagnosa_tertinggi']) . "</td>
+                <td>" . htmlspecialchars($result['hasil_similarity_tertinggi']) . "%</td>
+                <td>
+                    <a href='../handler/riwayathasil/admin-terimarevisipakar.php?idhasil=". $result['idhasil'] ."' class='btn btn-success'  onclick='return confirm(\"Apakah Anda yakin ingin menerima hasil ini?\")'>
+                        <i class='fas fa-check-circle'></i> Terima
+                    </a>
+                    <a href='../handler/riwayathasil/admin-tolakrevisipakar.php?idhasil=" . $result['idhasil'] ."' class='btn btn-danger' onclick='return confirm(\"Apakah Anda yakin ingin menolak hasil ini?\")'>
+                        <i class='fas fa-times-circle'></i> Tolak 
+                    </a>
+                </td>
+              </tr>";
+    }
+    ?>
+    <?php else: ?>
+                        <tr>
+                            <td colspan="7" class="text-center">Tidak ada data butuh revisi pakar yang tersedia.</td>
+                        </tr>
+                    <?php endif; ?>
+</tbody>
+</table> <br>
+        </div>
         </div>
 
         <!-- Navigasi Paginasi -->

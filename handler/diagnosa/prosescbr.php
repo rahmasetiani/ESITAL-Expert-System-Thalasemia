@@ -130,7 +130,7 @@ while ($case = $caseResult->fetch_assoc()) {
 
 // If similarity is below the threshold, adjust the result
 if ($bestmatchSimilarity < ($threshold / 100)) {
-    $bestmatchDiagnosa = "Tidak Teridentifikasi Penyakit Thalassemia dan Penyakit Serupa";
+    $bestmatchDiagnosa = "Tidak Teridentifikasi Penyakit Thalassemia";
 } else {
     $akurasi = round($bestmatchSimilarity * 100, 2);
 }
