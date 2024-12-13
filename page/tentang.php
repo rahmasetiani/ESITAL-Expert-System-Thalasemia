@@ -37,26 +37,6 @@ section {
 }
 
 
-p {
-    text-align: justify;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 1.2rem;
-    line-height: 1.7;
-    color: #555;
-    text-indent: 30px;
-    margin-bottom: 1.5rem;
-    font-weight: 400;
-    max-width: 900px;
-    margin: 0 auto 1.5rem;
-    transition: all 0.3s ease-in-out;
-}
-
-/* Efek Hover untuk Paragraf */
-p:hover {
-    color: #d62268;
-    transform: translateY(-5px);
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-}
 
 /* Styling Tombol */
 .btn.custom-btn {

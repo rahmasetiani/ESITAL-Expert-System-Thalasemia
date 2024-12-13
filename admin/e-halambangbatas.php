@@ -57,7 +57,10 @@ include '../handler/ambangbatas/admin-ubahambangbatas.php';  // Include the logi
 <?php include 'sidebar.php'; ?>
 <?php include 'navbar.php'; ?>
 
-<div id="content" class="container mt-5">
+<div id="content" style="margin-top: 56px;">
+    <h2>Ambang Batas</h2>
+    <a href="z-dashboard.php" style="text-decoration: none; color: #d62268;">Dashboard</a> /
+    <a href="e-halambangbatas.php" style="text-decoration: none; color: #d62268;">Ambang Batas</a> 
     <!-- Display Error if any -->
     <?php if (isset($error)) { echo "<div class='alert alert-danger'>$error</div>"; } ?>
 

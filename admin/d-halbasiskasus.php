@@ -29,6 +29,8 @@ include '../handler/basiskasus/pagination-basiskasus.php'; // Manage pagination 
 
 <div id="content" style="margin-top: 56px;">
     <h2>Daftar Basis Kasus</h2>
+    <a href="z-dashboard.php" style="text-decoration: none; color: #d62268;">Dashboard</a> /
+    <a href="d-halbasiskasus.php" style="text-decoration: none; color: #d62268;">Daftar Basus Kasus</a> 
 
     <!-- Add Basis Kasus Modal Trigger -->
     <div class="d-flex justify-content-between align-items-center mt-4">

@@ -97,6 +97,8 @@ $total_pages = ceil($total_records / $limit);
 
 <div id="content" style="margin-top: 56px;">
     <h2>Daftar Riwayat Deteksi</h2>
+    <a href="z-dashboard.php" style="text-decoration: none; color: #d62268;">Dashboard</a> /
+    <a href="f-halriwayatpasien.php" style="text-decoration: none; color: #d62268;">Daftar Riwayat Deteksi</a> 
 
     <div class="d-flex justify-content-between align-items-center mt-4">
         <div class="d-flex align-items-center mb-4">

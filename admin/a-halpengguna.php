@@ -46,7 +46,8 @@ include '../handler/pengguna/pagination-pengguna.php'; // Manage pagination and 
 <!-- Page Content -->
 <div id="content" style="margin-top: 56px;">
     <h2>Daftar Pengguna</h2>
-    
+    <a href="z-dashboard.php" style="text-decoration: none; color: #d62268;">Dashboard</a> /
+    <a href="a-halpengguna.php" style="text-decoration: none; color: #d62268;">Daftar Pengguna</a>    
     <!-- Add User and Search Section -->
     <div class="d-flex justify-content-between align-items-center mt-4">
         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addUserModal">

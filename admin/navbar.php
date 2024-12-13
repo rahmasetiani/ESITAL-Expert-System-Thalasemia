@@ -25,44 +25,50 @@
                 <!-- Displaying Sidebar Menu Items Only on Small Screens -->
                 <li class="nav-item d-lg-none">
                     <a href="z-dashboard.php" class="nav-link">
-                        <i class="bi bi-house-door-fill me-2"></i>
+                    <i class="bi bi-house-door me-3"></i>
                         Dashboard
                     </a>
                 </li>
                 <li class="nav-item d-lg-none">
                     <a href="a-halpengguna.php" class="nav-link">
-                        <i class="bi bi-person-fill me-2"></i>
+                        <i class="bi bi-person-circle me-3"></i>
                         Data Pengguna
                     </a>
                 </li>
                 <li class="nav-item d-lg-none">
                     <a href="b-halpenyakit.php" class="nav-link">
-                        <i class="bi bi-heart-fill me-2"></i>
+                        <i class="bi bi-heart me-3"></i>
                         Data Penyakit
                     </a>
                 </li>
                 <li class="nav-item d-lg-none">
                     <a href="c-halgejala.php" class="nav-link">
-                        <i class="bi bi-emoji-smile-fill me-2"></i>
+                        <i class="bi bi-symmetry-horizontal me-3"></i>
                         Data Gejala
                     </a>
                 </li>
                 <li class="nav-item d-lg-none">
                     <a href="d-halbasiskasus.php" class="nav-link">
-                        <i class="bi bi-file-earmark-fill me-2"></i>
+                        <i class="bi bi-file-earmark me-3"></i>
                         Basis Kasus
                     </a>
                 </li>
                 <li class="nav-item d-lg-none">
                     <a href="e-halambangbatas.php" class="nav-link">
-                        <i class="bi bi-clipboard-fill me-2"></i>
+                        <i class="bi bi-arrow-up-right-circle me-3"></i>
                         Ambang Batas
                     </a>
                 </li>
                 <li class="nav-item d-lg-none">
                     <a href="f-halriwayatpasien.php" class="nav-link">
-                        <i class="bi bi-clock-history me-2"></i>
-                        Riwayat Deteksi
+                     <i class="bi bi-clock-history me-3"></i>
+                        Data Riwayat Deteksi
+                    </a>
+                </li>
+                <li class="nav-item d-lg-none">
+                    <a href="f-halriwayatpasien.php" class="nav-link">
+                        <i class="bi bi-pencil-square me-3"></i>
+                        Data Butuh Revisi Pakar
                     </a>
                 </li>
             </ul>
