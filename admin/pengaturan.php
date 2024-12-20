@@ -26,7 +26,9 @@ if (!isset($_SESSION['email'])) {
 
 <div id="content" style="margin-top: 56px;">
     <h2>Pengaturan Profile</h2>
-
+    <a href="z-dashboard.php" style="text-decoration: none; color: #d62268;">Dashboard</a> /
+    <a href="pengaturan.php" style="text-decoration: none; color: #d62268;">Pengaturan Profile</a> 
+    <br>
 <?php
 // Inisialisasi variabel
 $namalengkap = '';

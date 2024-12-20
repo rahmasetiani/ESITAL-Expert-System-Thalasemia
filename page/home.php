@@ -9,12 +9,16 @@ include 'header.php'; ?>
             <a href="#about-us"" class="btn custom-btn btn-lg">Jelajahi</a>
             </div>
     </section>
+    <section><a style="font-size: 12px; display: block; margin-top: 5px;">  Sumber : Voisin/Phanie/Rex Features </a>
+    </section>
+
     <!-- About Us Section -->
 <section class="about-us py-5" id="about-us">
     <div class="container" style="color: #757375;">
         <div class="row align-items-center">
             <div class="col-md-6">
-                <img src="../asset/image/tentang.jpg" alt="About Us" class="img-fluid rounded">
+            <img src="../asset/image/sistempakar.png" alt="About Us" class="img-fluid rounded">
+            <a style="font-size: 12px; display: block; margin-top: 5px;">Sumber : https://br.freepik.com/autor/bonezboyz</a>
             </div>
             <div class="col-md-6">
                 <br>
@@ -52,7 +56,8 @@ include 'header.php'; ?>
     <div class="container" style="color: #757375;">
         <div class="row align-items-center">
             <div class="col-md-6">
-                <img src="../asset/image/anak.jpg" alt="About Us" class="img-fluid rounded">
+                <img src="../asset/image/robot.gif" alt="About Us" class="img-fluid rounded">
+                <a style="font-size: 12px; display: block; margin-top: 5px;">Sumber : https://tenor.com/users/sayantech</a>
             </div>
             <div class="col-md-6">
             <h1 style="color: #d62268;">Tujuan Website Ini</h1>

@@ -22,7 +22,7 @@
                         <li><a class="dropdown-item" href="../page/logout.php">Keluar</a></li>
                     </ul>
                 </li>
-                <!-- Displaying Sidebar Menu Items Only on Small Screens -->
+                <!-- Displaying Sidebar Menu Items Only on Small Screens
                 <li class="nav-item d-lg-none">
                     <a href="z-dashboard.php" class="nav-link">
                     <i class="bi bi-house-door me-3"></i>
@@ -70,7 +70,7 @@
                         <i class="bi bi-pencil-square me-3"></i>
                         Data Butuh Revisi Pakar
                     </a>
-                </li>
+                </li> -->
             </ul>
         </div>
     </div>

@@ -79,6 +79,12 @@ $totalPages = ceil($totalRow['total'] / $limit);
     <a href="z-dashboard.php" style="text-decoration: none; color: #d62268;">Dashboard</a> /
     <a href="c-halgejala.php" style="text-decoration: none; color: #d62268;">Daftar Gejala</a> 
 
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addGejalaModal">
+        <i class="bi bi-person-plus"></i>Tambah Gejala
+        </button>
+    </div>
+
     <!-- Search and Limit section -->
     <div class="d-flex justify-content-between align-items-center mt-4">
         <div class="d-flex align-items-center">
