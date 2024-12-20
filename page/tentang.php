@@ -39,23 +39,25 @@ include 'header.php'; ?>
     </div>
 
     <!-- Alamat -->
-    <div class="address-container" style="flex: 1; min-width: 300px; text-align: left;">
-        <h4 style="color: #d62268; font-size: 1.5rem; margin-bottom: 1rem;">Alamat Thalassemia Banyumas:</h4>
-        <p style="font-size: 1.2rem; color: #555;">
-            <i class="fas fa-map-marker-alt" style="margin-right: 8px;"></i>
-            Gedung Thalassemia RSUD Banyumas, Jl. Rumah Sakit No.1, Karangpucung, Kejawar, Kec. Banyumas, Kabupaten Banyumas, Jawa Tengah 53192
-        </p>
-        <p style="font-size: 1.2rem; color: #555;">
-            <i class="fas fa-globe" style="margin-right: 8px;"></i>
-            <a href="http://rsudbms.banyumaskab.go.id/" target="_blank">rsudbms.banyumaskab.go.id</a>
-        </p>
-        <p style="font-size: 1.2rem; color: #555;">
-            <i class="fas fa-phone" style="margin-right: 8px;"></i> +62 811-2622-009
-        </p>
-        <!-- Tombol -->
-        <a href="diagnosa.php" class="btn custom-btn btn-lg">Deteksi Dini Thalassemia</a>
-    </div>
+    <div class="address-container" style="flex: 1; min-width: 300px; text-align: left; padding-left: 40px;">
+    <h4 style="color: #d62268; font-size: 1.5rem; margin-bottom: 1rem;">Alamat Thalassemia Banyumas:</h4>
+    <p style="font-size: 1.2rem; color: #555;">
+        <i class="fas fa-map-marker-alt" style="margin-right: 8px;"></i>
+        Gedung Thalassemia RSUD Banyumas, Jl. Rumah Sakit No.1, Karangpucung, Kejawar, Kec. Banyumas, Kabupaten Banyumas, Jawa Tengah 53192
+    </p>
+    <p style="font-size: 1.2rem; color: #555;">
+        <i class="fas fa-globe" style="margin-right: 8px;"></i>
+        <a href="http://rsudbms.banyumaskab.go.id/" target="_blank">rsudbms.banyumaskab.go.id</a>
+    </p>
+    <p style="font-size: 1.2rem; color: #555;">
+        <i class="fas fa-phone" style="margin-right: 8px;"></i> +62 811-2622-009
+    </p>
+    <!-- Tombol -->
+    <a href="diagnosa.php" class="btn custom-btn btn-lg" style="margin-left: 0;">Deteksi Dini Thalassemia</a>
 </div>
+
+</div>
+
 </section>
 
 <style>
