@@ -70,7 +70,7 @@ include '../handler/pengguna/pagination-pengguna.php'; // Manage pagination and 
         <!-- Search Pengguna Section on the Right -->
         <form method="GET" action="" class="d-flex align-items-center">
             <input type="text" id="searchInput" name="search" value="<?= htmlspecialchars($searchQuery); ?>" class="form-control w-75 me-2" placeholder="Nama Pengguna" onkeypress="if(event.key === 'Enter') searchPengguna()">
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn btn-primary" onclick="searchPengguna()">
                 <i class="fas fa-search"></i>
             </button>
         </form>

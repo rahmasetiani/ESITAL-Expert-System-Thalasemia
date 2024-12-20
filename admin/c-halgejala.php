@@ -93,11 +93,14 @@ $totalPages = ceil($totalRow['total'] / $limit);
 
         <!-- Search Gejala Section on the Right -->
         <div class="d-flex align-items-center">
-            <input type="text" class="form-control w-75 me-2" placeholder="Nama Gejala" id="searchInput" value="<?php echo htmlspecialchars($searchQuery); ?>" onkeypress="if(event.key === 'Enter') searchGejala()">
-            <button type="submit" class="btn btn-primary">
-            <i class="fas fa-search"></i>
-        </button>
+            <input type="text" class="form-control w-75 me-2" placeholder="Nama Gejala" id="searchInput" 
+                value="<?php echo htmlspecialchars($searchQuery); ?>" 
+                onkeypress="if(event.key === 'Enter') searchGejala()">
+            <button type="button" class="btn btn-primary" onclick="searchGejala()">
+                <i class="fas fa-search"></i>
+            </button>
         </div>
+
     </div>
 
     <!-- Tabel Gejala -->

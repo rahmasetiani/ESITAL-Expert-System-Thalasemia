@@ -209,24 +209,146 @@ foreach ($penyakit_data as $penyakit) {
 
 <!-- Page Content -->
 <div id="content" style="margin-top: 56px;">
+<?php if ($_SESSION['role'] == 1): ?>
 <h2>Dashboard Admin</h2>
+<?php elseif ($_SESSION['role'] == 2): ?>
+<h2>Dashboard Pakar</h2>
+<?php endif; ?>
 
     <div class="container mt-4">
         <div class="row">
-
+        <?php if ($_SESSION['role'] == 1): ?>
            <!-- Card Data Pengguna -->
-<div class="col-md-4">
-    <a href="a-halpengguna.php" class="text-decoration-none">
-        <div class="card">
-            <div class="card-body text-center">
-                <h5 class="card-title"><i class="bi bi-person-circle me-3"></i>
-                <?php echo $count_user; ?></h5>
-                <p class="card-text">Data Pengguna</p>
+            <div class="col-md-4">
+                <a href="a-halpengguna.php" class="text-decoration-none">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title"><i class="bi bi-person-circle me-3"></i>
+                            <?php echo $count_user; ?></h5>
+                            <p class="card-text">Data Pengguna</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Card Data Penyakit -->
+            <div class="col-md-4">
+            <a href="javascript:void(0);" class="text-decoration-none" onclick="notifyPakarPenyakit()">
+            <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title"><i class="bi bi-heart-fill me-2"></i>
+                        <?php echo $count_penyakit; ?></h5>
+                        <p class="card-text">Data Penyakit</p>
+                    </div>
+                </div>
+                </a>
+            </div>
+
+            <!-- Card Data Gejala -->
+            <div class="col-md-4">
+            <a href="javascript:void(0);" class="text-decoration-none" onclick="notifyPakarGejala()">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title"><i class="bi bi-symmetry-horizontal me-3"></i>
+                        <?php echo $count_gejala; ?></h5>
+                        <p class="card-text">Data Gejala</p>
+                    </div>
+                </div>
+                </a>
+            </div>
+
+            <div class="col-md-4">
+            <a href="javascript:void(0);" class="text-decoration-none" onclick="notifyPakarBasisKasus()">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">
+                        <i class="bi bi-file-earmark-fill me-2"></i>
+                        <?php echo $count_basiskasus; ?></h5>
+                        <p class="card-text">Basis Kasus</p>
+                    </div>
+                </div>
+                </a>
+            </div>
+
+            <!-- Card Basis Kasus Gejala -->
+            <div class="col-md-4">
+            <a href="javascript:void(0);" class="text-decoration-none" onclick="notifyPakarBasisKasus()">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">
+                        <i class="bi bi-file-earmark-fill me-2"></i>
+                        <?php echo $count_basiskasus_gejala; ?></h5>
+                        <p class="card-text">Basis Kasus Gejala</p>
+                    </div>
+                </div>
+            </a>
+            </div>
+
+            <!-- Card Ambang Batas -->
+            <div class="col-md-4">
+            <a href="javascript:void(0);" class="text-decoration-none" onclick="notifyPakarAmbangBatas()">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">
+                        <i class="bi bi-arrow-up-right-circle me-3"></i>
+                        <?php echo $nilai_ambang_batas; ?>%</h5>
+                        <p class="card-text">Ambang Batas</p>
+                    </div>
+                </div>
+                </a>
+            </div>
+
+            <!-- Card Riwayat Deteksi -->
+            <div class="col-md-4">
+            <a href="f-halriwayatpasien.php" class="text-decoration-none">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">
+                        <i class="bi bi-clock-history me-2"></i>
+                        <?php echo $count_riwayat_deteksi; ?></h5>
+                        <p class="card-text">Data Riwayat Deteksi</p>
+                    </div>
+                </div>
+                </a>
+            </div>
+
+            <!-- Card Butuh Revisi Pakar -->
+            <div class="col-md-4">
+            <a href="javascript:void(0);" class="text-decoration-none" onclick="notifyPakarRevisiPakar()">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">
+                            <i class="bi bi-pencil-square me-3"></i><?php echo $count_revisi_pakar; ?></h5>
+                        <p class="card-text">Data Butuh Revisi Pakar</p>
+                    </div>
+                </div>
+                </a>
+            </div>
+            <!-- Grafik Penyakit Pasien -->
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Grafik Jumlah Pasien Tiap Penyakit</h5>
+                    <canvas id="penyakitChart" width="800" height="500"></canvas>
+                    </div>
             </div>
         </div>
-    </a>
-</div>
-            <!-- Card Data Penyakit -->
+
+            
+        <?php elseif ($_SESSION['role'] == 2): ?>
+
+            <div class="col-md-4">
+                <a href="javascript:void(0);" class="text-decoration-none" onclick="notifyAdminPengguna()">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title"><i class="bi bi-person-circle me-3"></i>
+                            <?php echo $count_user; ?></h5>
+                            <p class="card-text">Data Pengguna</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+<!-- Card Data Penyakit -->
             <div class="col-md-4">
             <a href="b-halpenyakit.php" class="text-decoration-none">
 
@@ -254,7 +376,6 @@ foreach ($penyakit_data as $penyakit) {
                 </a>
             </div>
 
-            <!-- Card Basis Kasus -->
             <div class="col-md-4">
             <a href="d-halbasiskasus.php" class="text-decoration-none">
                 <div class="card">
@@ -322,7 +443,6 @@ foreach ($penyakit_data as $penyakit) {
                 </div>
                 </a>
             </div>
-
         </div>
 
         <!-- Grafik Penyakit Pasien -->
@@ -334,8 +454,10 @@ foreach ($penyakit_data as $penyakit) {
                     </div>
             </div>
         </div>
+        <?php endif; ?>
     </div>
 </div>
+
 
 <script>
     var ctx = document.getElementById('penyakitChart').getContext('2d');
@@ -382,11 +504,37 @@ var penyakitChart = new Chart(ctx, {
 
 </script>
 
+<script>
+    function notifyAdminPengguna() {
+        alert('Hubungi admin untuk pengelolaan Data Pengguna.');
+    }
+
+    function notifyPakarPenyakit() {
+        alert('Hubungi pakar untuk pengelolaan Data Penyakit.');
+    }
+
+    function notifyPakarGejala() {
+        alert('Hubungi pakar untuk pengelolaan Data Gejala.');
+    }
+
+    function notifyPakarBasisKasus() {
+        alert('Hubungi pakar untuk pengelolaan Basis Kasus.');
+    }
+
+    function notifyPakarAmbangBatas() {
+        alert('Hubungi pakar untuk pengelolaan Nilai Ambang Batas.');
+    }
+
+    function notifyPakarRevisiPakar() {
+        alert('Hubungi pakar untuk pengelolaan Data Revisi Pakar.');
+    }
+</script>
 
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
 
 

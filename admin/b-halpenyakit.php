@@ -65,8 +65,10 @@ include '../handler/penyakit/pagination-penyakit.php'; // Manage pagination and 
 
         <!-- Search Penyakit Section on the Right -->
         <div class="d-flex align-items-center">
-            <input type="text" class="form-control w-75 me-2" placeholder="Nama Penyakit" id="searchInput" value="<?php echo htmlspecialchars($searchQuery); ?>" onkeypress="if(event.key === 'Enter') searchPenyakit()">
-            <button type="submit" class="btn btn-primary">
+            <input type="text" class="form-control w-75 me-2" placeholder="Nama Penyakit" id="searchInput" 
+                value="<?php echo htmlspecialchars($searchQuery); ?>" 
+                onkeypress="if(event.key === 'Enter') searchPenyakit()">
+            <button type="submit" class="btn btn-primary" onclick="searchPenyakit()">
             <i class="fas fa-search"></i>
         </button>
         </div>

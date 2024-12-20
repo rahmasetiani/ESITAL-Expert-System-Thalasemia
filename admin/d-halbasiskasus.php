@@ -54,7 +54,7 @@ include '../handler/basiskasus/pagination-basiskasus.php'; // Manage pagination 
         <!-- Search Gejala Section on the Right -->
         <div class="d-flex align-items-center">
             <input type="text" class="form-control w-75 me-2" placeholder="Basis Kasus Penyakit" id="searchInput" value="<?php echo htmlspecialchars($searchQuery); ?>" onkeypress="if(event.key === 'Enter') searchBasisKasus()">
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn btn-primary" onclick="searchBasisKasus()">
             <i class="fas fa-search"></i>
         </div>
     </div>
