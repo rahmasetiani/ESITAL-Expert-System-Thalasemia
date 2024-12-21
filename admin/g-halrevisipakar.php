@@ -57,21 +57,33 @@ $result = $stmt->get_result();
 // Menyimpan semua hasil ke dalam array
 $allResults = [];
 while ($row = $result->fetch_assoc()) {
+    // Mendecode JSON menjadi array
     $keseluruhan_diagnosa = json_decode($row['keseluruhan_diagnosa'], true);
     $keseluruhan_similarity = json_decode($row['keseluruhan_similarity'], true);
 
+    // Mengecek apakah keduanya adalah array
     if (is_array($keseluruhan_similarity) && is_array($keseluruhan_diagnosa)) {
-        // Ambil diagnosa pertama atau berdasarkan urutan lain
-        $row['hasil_diagnosa_terpilih'] = $keseluruhan_diagnosa[0]; // atau logika lain
-        $row['hasil_similarity_terpilih'] = $keseluruhan_similarity[0]; // atau logika lain
+        // Ambil nilai maksimal dan indeksnya
+        $max_similarity = max($keseluruhan_similarity);
+        $max_diagnosa = max($keseluruhan_diagnosa);
+        
+        $index_similarity_max = array_search($max_similarity, $keseluruhan_similarity);
+        $index_diagnosa_max = array_search($max_diagnosa, $keseluruhan_diagnosa);
+
+        // Assign nilai maksimal berdasarkan indeks
+        $row['hasil_diagnosa_terpilih'] = $keseluruhan_diagnosa[$index_diagnosa_max];
+        $row['hasil_similarity_terpilih'] = $keseluruhan_similarity[$index_similarity_max];
     } else {
+        // Jika tidak berupa array, set nilai default
         $row['hasil_diagnosa_terpilih'] = 'N/A';
         $row['hasil_similarity_terpilih'] = 'N/A';
     }
-    
 
+    // Menyimpan hasil keseluruhan dalam row
     $row['keseluruhan_diagnosa'] = $keseluruhan_diagnosa;
     $row['keseluruhan_similarity'] = $keseluruhan_similarity;
+
+    // Menambahkan row ke array hasil
     $allResults[] = $row;
 }
 
@@ -176,17 +188,8 @@ $total_pages = ceil($total_records / $limit);
                 <td class='hasil-similarity-terpilih'>" . htmlspecialchars($result['hasil_similarity_terpilih']) . "%</td>
                 <td>
                         <button type='button' class='btn btn-warning' data-bs-toggle='modal' data-bs-target='#editModal' onclick='loadEditData(" . json_encode($result) . ")'>
-                            Edit
-                        </button>
-
-                    <form action='../handler/riwayathasil/admin-terimarevisipakar.php' method='post' style='display:inline;' onsubmit='return confirm(\"Apakah Anda yakin ingin Terima hasil ini?\")'>
-                        <input type='hidden' name='idhasil' value='". $result['idhasil'] ."'>
-                        <input type='hidden' name='hasil_diagnosa_terpilih' value='". $result['hasil_diagnosa_terpilih'] ."' />
-                        <input type='hidden' name='hasil_similarity_terpilih' value='". $result['hasil_similarity_terpilih'] ."' />
-                        <button type='submit' class='btn btn-success'>
-                            <i class='fas fa-check-circle'></i> Terima
-                        </button>
-                    </form>
+                            <i class='fas fa-pencil-alt'></i> Revisi
+                        </button>             
 
                     <form action='../handler/riwayathasil/admin-tolakrevisipakar.php' method='get' style='display:inline;' onsubmit='return confirm(\"Apakah Anda yakin ingin menolak hasil ini?\")'>
                         <input type='hidden' name='idhasil' value='". $result['idhasil'] ."'>
@@ -230,16 +233,13 @@ $total_pages = ceil($total_records / $limit);
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="saveEdit()">Simpan</button>
-                </div>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-success" onclick="saveEdit()"><i class='fas fa-check-circle'></i> Terima</button>
+                    </div>
             </form>
         </div>
     </div>
 </div>
-
-
-
-
 
         <!-- Navigasi Paginasi -->
         <nav aria-label="Page navigation" class="pagination-container">
@@ -326,19 +326,44 @@ $total_pages = ceil($total_records / $limit);
     });
 }
 
-
-
-    function saveEdit() {
+function saveEdit() {
     const idhasil = document.getElementById('editIdHasil').value;
     const diagnosaSelect = document.getElementById('editDiagnosa');
     const selectedDiagnosa = diagnosaSelect.options[diagnosaSelect.selectedIndex].text;
     const similarity = document.getElementById('editSimilarity').value;
 
+    // Update data di tabel
     const row = document.querySelector(`tr[data-idhasil="${idhasil}"]`);
     if (row) {
         row.querySelector('.hasil-diagnosa-terpilih').innerText = selectedDiagnosa.split(" (")[0];
         row.querySelector('.hasil-similarity-terpilih').innerText = `${similarity}%`;
     }
+
+    // Kirim data ke server menggunakan Ajax
+    fetch('../handler/riwayathasil/admin-updaterevisipakar.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            idhasil: idhasil,
+            hasil_diagnosa: selectedDiagnosa.split(" (")[0],
+            hasil_similarity: similarity
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Data berhasil diperbarui!');
+            window.location.href = 'g-halrevisipakar.php';
+        } else {
+            alert('Gagal memperbarui data: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan saat memperbarui data.');
+    });
 
     // Tutup modal
     const editModal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
@@ -353,19 +378,7 @@ $total_pages = ceil($total_records / $limit);
     document.body.style.paddingRight = ''; // Reset padding body jika ditambahkan oleh Bootstrap
 }
 
-document.querySelectorAll('.btn-warning').forEach(button => {
-    button.addEventListener('click', function () {
-        const row = this.closest('tr'); // Ambil baris terkait
-        const idhasil = row.getAttribute('data-idhasil');
-        const diagnosa = row.querySelector('.hasil-diagnosa-terpilih').innerText;
-        const similarity = row.querySelector('.hasil-similarity-terpilih').innerText.replace('%', '').trim();
-
-        // Isi form di modal dengan data yang dipilih
-        document.querySelector('input[name="idhasil"]').value = idhasil;
-        document.querySelector('input[name="hasil_diagnosa_terpilih"]').value = diagnosa;
-        document.querySelector('input[name="hasil_similarity_terpilih"]').value = similarity;
-    });
-});
-
 
 </script>
+
+
