@@ -63,7 +63,7 @@ if ($penyakitData) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hasil Diagnosa</title>
+    <title>Hasil Deteksi Dini</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="../asset/css/index.css"> <!-- Sesuaikan dengan stylesheet Anda -->
 </head>
@@ -115,17 +115,26 @@ if ($penyakitData) {
                         </td>
                     </tr>
                     <tr>
-                <td><strong>Hasil Diagnosa</strong></td>
-                <td>
-                    <?php 
-                    echo htmlspecialchars($lastResultMessage['hasil_diagnosa']);
-                    
-                    // Cek jika hasil diagnosa adalah "Tidak Teridentifikasi Penyakit Thalassemia"
-                    if ($lastResultMessage['hasil_diagnosa'] == "Tidak Teridentifikasi Penyakit Thalassemia") {
-                        echo "<br>Namun, gejala yang Anda alami akan kami tinjau ulang bersama pakar untuk memastikan hasil diagnosa lebih akurat.";
-                    }
-                    ?>
-                </td>
+                    <td><strong>Hasil Deteksi Dini</strong></td>
+                    <td>
+                        <?php 
+                        // Mendapatkan hasil diagnosa
+                        $hasilDiagnosa = htmlspecialchars($lastResultMessage['hasil_diagnosa']);
+
+                        // Cek jika hasil diagnosa adalah "Tidak Teridentifikasi Penyakit Thalassemia"
+                        if ($hasilDiagnosa == "Tidak Teridentifikasi Penyakit Thalassemia") {
+                            echo "{$hasilDiagnosa} <br>Namun, gejala yang Anda alami akan kami tinjau ulang bersama pakar untuk memastikan hasil deteksi.";
+                        } 
+                        // Cek jika hasil diagnosa tidak mengandung kata "thalassemia"
+                        elseif (stripos($hasilDiagnosa, "thalassemia") === false) {
+                            echo "Tidak Teridentifikasi Penyakit Thalassemia. <br> Namun, kemungkinan anda teridentifikasi penyakit {$hasilDiagnosa}.";
+                        } 
+                        // Cek jika hasil diagnosa mengandung kata "thalassemia"
+                        else {
+                            echo "{$hasilDiagnosa}";
+                        }
+                        ?>
+                    </td>
             </tr>
 
                     <?php if ($penyakitData): ?>
@@ -157,7 +166,7 @@ if ($penyakitData) {
 <div class="card-body d-flex justify-content-between">       
     <!-- Tombol Tampilkan Semua Diagnosa -->
     <button class="btn custom-btn btn-lg" id="toggleDiagnosesBtn" onclick="toggleDiagnosesTable()">
-        <i class="fas fa-search-plus" id="diagnosesIcon"></i> Tampilkan Semua Diagnosa
+        <i class="fas fa-search-plus" id="diagnosesIcon"></i> Tampilkan Semua Hasil Deteksi Dini
     </button>
 </div>
 </div>
@@ -177,7 +186,7 @@ if ($penyakitData) {
         <table class="table">
             <thead>
                 <tr>
-                    <th>Diagnosa Penyakit</th>
+                    <th>Deteksi Penyakit</th>
                     <th>Presentase (%)</th>
                 </tr>
             </thead>

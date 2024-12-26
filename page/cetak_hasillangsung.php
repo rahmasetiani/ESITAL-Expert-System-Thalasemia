@@ -60,7 +60,7 @@ ob_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hasil Pemeriksaan Pasien</title>
+    <title>Hasil Deteksi Dini Exsithal</title>
     <style>
     body {
         font-family: 'Times New Roman', Times, serif;
@@ -152,13 +152,14 @@ ob_start();
 <body>
     <div class="kop-surat">
         <!-- <img src="http://localhost/Tugas-Akhir/ESITAL-Expert-System-Thalasemia/asset/logo-kop.png" alt="Logo Kop Surat"> -->
-        <h3>Sistem Pakar Deteksi Dini Penyakit Thalasemia</h3>
+        <h3>Expert System Deteksi Dini Penyakit Thalasemia</h3>
         <h4>Yayasan Thalassemia Indonesia Kabupaten Banyumas</h4>
+        <p>Jl. Rumah Sakit No.1, Karangpucung, Kejawar, Kec. Banyumas, Kabupaten Banyumas, Jawa Tengah 53192</p>
         <hr>
     </div>
 
     <div>
-        <h2 style="text-align: center; font-size: 16pt; font-weight: bold;">Hasil Pemeriksaan Pasien</h2>
+        <h2 style="text-align: center; font-size: 16pt; font-weight: bold;">Hasil Deteksi Dini Exsithal</h2>
 
         <table class="content-table">
             <tr>
@@ -193,8 +194,27 @@ ob_start();
                 </td>
             </tr>
             <tr>
-                <td><strong>Hasil Diagnosa</strong></td>
-                <td>: <?php echo htmlspecialchars($row['hasil_diagnosa']); ?></td>
+                <td><strong>Hasil Deteksi Dini</strong></td>
+                <td>
+                        <?php 
+                        // Mendapatkan hasil diagnosa
+                        $hasilDiagnosa = htmlspecialchars($row['hasil_diagnosa']);
+
+                        // Cek jika hasil diagnosa adalah "Tidak Teridentifikasi Penyakit Thalassemia"
+                        if ($hasilDiagnosa == "Tidak Teridentifikasi Penyakit Thalassemia") {
+                            echo "{$hasilDiagnosa} <br> Namun, gejala yang anda alami akan kami tinjau ulang bersama pakar untuk memastikan hasil deteksi.";
+                        } 
+                        // Cek jika hasil diagnosa tidak mengandung kata "thalassemia"
+                        elseif (stripos($hasilDiagnosa, "thalassemia") === false) {
+                            echo "Tidak Teridentifikasi Penyakit Thalassemia. <br> Namun, kemungkinan anda teridentifikasi penyakit {$hasilDiagnosa}.";
+                        } 
+                        // Cek jika hasil diagnosa mengandung kata "thalassemia"
+                        else {
+                            echo "{$hasilDiagnosa}";
+                        }
+                        ?>
+                    </td>
+
             </tr>
             <?php if (!empty($row['hasil_similarity'])): ?>
             <tr>
@@ -218,7 +238,7 @@ ob_start();
         <?php else: ?>
             <p style="color: #f44336;">Informasi penyakit tidak ditemukan.</p>
         <?php endif; ?>
-        <h3">Detail Hasil Akurasi Deteksi</h3>
+        <h3">Detail Hasil Akurasi Deteksi Dini</h3>
 <table class="diagnosa-table">
     <thead>
         <tr>
@@ -258,9 +278,8 @@ ob_start();
 
 
         <div class="signature">
-            <p>Ditandatangani oleh Pakar:</p>
-            <img src="http://localhost/Tugas-Akhir/ESITAL-Expert-System-Thalasemia/asset/ttd-pakar.png" alt="Tanda Tangan Pakar" style="width: 150px; height: auto;">
-            <p><strong>Dr. John Doe</strong></p>
+            <p>Mengetahui</p>
+            <p><strong>Yayasan Thalassemia Indonesia Banyumas</strong></p>
         </div>
     </div>
 </body>
