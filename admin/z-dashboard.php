@@ -43,6 +43,10 @@ $count_revisi_pakar_query = "SELECT COUNT(*) AS revisi_pakar_count FROM hasil WH
 $count_revisi_pakar = mysqli_fetch_assoc(mysqli_query($conn, $count_revisi_pakar_query))['revisi_pakar_count'];
 
 
+// Query untuk menghitung jumlah Data Rekomendasi Kasus Baru Pakar (hasil_similarity NULL)
+$count_kasus_baru_query = "SELECT COUNT(*) AS kasus_baru_count FROM hasil WHERE hasil_similarity IS NULL AND status_revisi = 'rejected'";
+$count_kasus_baru = mysqli_fetch_assoc(mysqli_query($conn, $count_kasus_baru_query))['kasus_baru_count'];
+
 // Ambil nilai ambang batas dari tabel ambang_batas
 $ambang_batas_query = "SELECT nilai FROM ambang_batas WHERE id = 1"; // Ambil data ambang batas pertama
 $ambang_batas_result = mysqli_query($conn, $ambang_batas_query);
@@ -311,18 +315,33 @@ foreach ($penyakit_data as $penyakit) {
                 </a>
             </div>
 
-            <!-- Card Butuh Revisi Pakar -->
+            <!-- Card Butuh  Rekomendasi Kasus Baru Pakar -->
             <div class="col-md-4">
             <a href="javascript:void(0);" class="text-decoration-none" onclick="notifyPakarRevisiPakar()">
                 <div class="card">
                     <div class="card-body text-center">
                         <h5 class="card-title">
-                            <i class="bi bi-pencil-square me-3"></i><?php echo $count_revisi_pakar; ?></h5>
+                            <i class="bi bi-pencil-square me-3"></i>
+                            <?php echo $count_revisi_pakar; ?></h5>
                         <p class="card-text">Data Butuh Revisi Pakar</p>
                     </div>
                 </div>
                 </a>
             </div>
+
+            <div class="col-md-4">
+            <a href="javascript:void(0);" class="text-decoration-none" onclick="notifyPakarKasusBaru()">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">
+                            <i class="bi bi-pencil-square me-3"></i>
+                            <?php echo $count_kasus_baru; ?></h5>
+                        <p class="card-text">Data Rekomendasi Kasus Baru</p>
+                    </div>
+                </div>
+                </a>
+            </div>
+
             <!-- Grafik Penyakit Pasien -->
         <div class="col-md-12">
             <div class="card">
@@ -348,7 +367,7 @@ foreach ($penyakit_data as $penyakit) {
                 </a>
             </div>
 
-<!-- Card Data Penyakit -->
+            <!-- Card Data Penyakit -->
             <div class="col-md-4">
             <a href="b-halpenyakit.php" class="text-decoration-none">
 
@@ -437,8 +456,23 @@ foreach ($penyakit_data as $penyakit) {
                 <div class="card">
                     <div class="card-body text-center">
                         <h5 class="card-title">
-                            <i class="bi bi-pencil-square me-3"></i><?php echo $count_revisi_pakar; ?></h5>
+                            <i class="bi bi-pencil-square me-3"></i>
+                            <?php echo $count_revisi_pakar; ?></h5>
                         <p class="card-text">Data Butuh Revisi Pakar</p>
+                    </div>
+                </div>
+                </a>
+            </div>
+
+             <!-- Card Rekomendasi Kasus Baru Pakar -->
+             <div class="col-md-4">
+            <a href="h-halkasusbaru.php" class="text-decoration-none">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">
+                        <i class="bi bi-folder-fill me-3"></i>
+                        <?php echo $count_kasus_baru; ?></h5>
+                        <p class="card-text">Data Rekomendasi Kasus Baru</p>
                     </div>
                 </div>
                 </a>
@@ -527,6 +561,10 @@ var penyakitChart = new Chart(ctx, {
 
     function notifyPakarRevisiPakar() {
         alert('Hubungi pakar untuk pengelolaan Data Revisi Pakar.');
+    }
+
+    function notifyPakarKasusBaru() {
+        alert('Hubungi pakar untuk pengelolaan Data Rekomendasi Kasus Baru.');
     }
 </script>
 

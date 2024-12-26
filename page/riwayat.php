@@ -119,7 +119,7 @@ $total_pages = ceil($total_rows / $limit);
                                 <th>Nama Pasien</th>
                                 <th>Tanggal Pemeriksaan</th>
                                 <th>Gejala Terpilih</th>
-                                <th>Hasil Diagnosa</th>
+                                <th>Hasil Deteksi Dini</th>
                                 <th>Similarity</th>
                                 <th>Dokumen</th>
                                 <th>Aksi</th>

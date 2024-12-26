@@ -32,7 +32,7 @@ include '../handler/penyakit/get_penyakit.php'; // Memanggil get_penyakit
                                     }
                                     ?>
                                 </p>
-                                <strong style="font-size: 1.1rem; color: #333;">Solusi Pengobatan:</strong>
+                                <strong style="font-size: 1.1rem; color: #333;">Saran Tindak Lanjut:</strong>
                                 <p class="card-text solution" data-short-text="<?php echo htmlspecialchars(substr($row['solusipengobatan'], 0, 100)); ?>" data-full-text="<?php echo htmlspecialchars($row['solusipengobatan']); ?>" style="font-size: 1.1rem; color: #555;">
                                     <?php 
                                     $shortSolution = substr($row['solusipengobatan'], 0, 100);
@@ -51,7 +51,7 @@ include '../handler/penyakit/get_penyakit.php'; // Memanggil get_penyakit
 
         </div>
        <br><br>
-        <a href="diagnosa.php" class="btn custom-btn btn-lg">Detesi Dini Thalassemia</a>
+        <a href="diagnosa.php" class="btn custom-btn btn-lg">Deteksi Dini Thalassemia</a>
 
     </div>
 </section>

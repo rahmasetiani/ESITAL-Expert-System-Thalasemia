@@ -85,7 +85,7 @@ include '../handler/penyakit/pagination-penyakit.php'; // Manage pagination and 
                         <th class="text-center">Kode Penyakit</th>
                         <th class="text-center">Nama Penyakit</th>
                         <th class="text-center">Deskripsi Penyakit</th>
-                        <th class="text-center">Solusi Pengobatan</th>
+                        <th class="text-center">Saran Tindak Lanjut</th>
                         <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -139,7 +139,7 @@ include '../handler/penyakit/pagination-penyakit.php'; // Manage pagination and 
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-12">
-                                                        <strong>Solusi Pengobatan:</strong>
+                                                        <strong>Saran Tindak Lanjut:</strong>
                                                         <div class="p-2 border rounded" 
                                                              style="max-height: 150px; overflow-y: auto; white-space: pre-wrap;">
                                                             <?php echo nl2br(htmlspecialchars($penyakit['solusipengobatan'])); ?>
@@ -174,7 +174,7 @@ include '../handler/penyakit/pagination-penyakit.php'; // Manage pagination and 
                                                     <textarea class="form-control" name="deskripsi" rows="3" required><?php echo htmlspecialchars($penyakit['deskripsi']); ?></textarea>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label for="solusi" class="form-label">Solusi Pengobatan</label>
+                                                    <label for="solusi" class="form-label">Saran Tindak Lanjut</label>
                                                     <textarea class="form-control" name="solusipengobatan" rows="3" required><?php echo htmlspecialchars($penyakit['solusipengobatan']); ?></textarea>
                                                 </div>
                                                 <div class="mb-3">
@@ -250,7 +250,7 @@ include '../handler/penyakit/pagination-penyakit.php'; // Manage pagination and 
                             <textarea class="form-control" name="deskripsi" required></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="solusi" class="form-label">Solusi Pengobatan</label>
+                            <label for="solusi" class="form-label">Saran Tindak Lanjut</label>
                             <textarea class="form-control" name="solusi" required></textarea>
                         </div>
                         <div class="mb-3">

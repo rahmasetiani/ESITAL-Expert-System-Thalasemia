@@ -211,7 +211,7 @@ ob_start();
                     <td>: <?php echo htmlspecialchars($penyakit['deskripsi']); ?></td>
                 </tr>
                 <tr>
-                    <td><strong>Solusi Pengobatan</strong></td>
+                    <td><strong>Saran Tindak Lanjut</strong></td>
                     <td>: <?php echo htmlspecialchars($penyakit['solusipengobatan']); ?></td>
                 </tr>
             </table>

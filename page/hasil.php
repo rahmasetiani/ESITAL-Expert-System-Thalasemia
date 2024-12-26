@@ -134,7 +134,7 @@ if ($penyakitData) {
                         <td><?php echo htmlspecialchars($deskripsi); ?></td>
                     </tr>
                     <tr>
-                        <td><strong>Solusi Pengobatan</strong></td>
+                        <td><strong>Saran Tindak Lanjut</strong></td>
                         <td><?php echo htmlspecialchars($solusiPengobatan); ?></td>
                     </tr>
                     <?php endif; ?>

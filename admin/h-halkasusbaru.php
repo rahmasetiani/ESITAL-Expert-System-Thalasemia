@@ -19,7 +19,7 @@ $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $limit;
 
 // Query untuk mengambil data dengan filter tanggal dan nama
-$query = "SELECT * FROM hasil WHERE hasil_similarity IS NOT NULL";
+$query = "SELECT * FROM hasil WHERE hasil_similarity IS NULL AND status_revisi = 'rejected'";
 
 // Filter berdasarkan tanggal
 if ($filter_date) {
@@ -57,7 +57,7 @@ while ($row = $result->fetch_assoc()) {
 }
 
 // Menghitung total hasil untuk paginasi
-$countQuery = "SELECT COUNT(*) as total FROM hasil WHERE hasil_similarity IS NOT NULL";
+$countQuery = "SELECT COUNT(*) as total FROM hasil WHERE hasil_similarity IS NULL AND status_revisi = 'rejected'";
 if ($filter_date) {
     $countQuery .= " AND created_at LIKE ?";
 }
@@ -85,7 +85,7 @@ $total_pages = ceil($total_records / $limit);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Riwayat Pasien</title>
+    <title>Rekomendasi Kasus Baru</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Font Awesome CDN -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.3/font/bootstrap-icons.min.css" rel="stylesheet">
@@ -96,9 +96,9 @@ $total_pages = ceil($total_records / $limit);
 <?php include 'navbar.php'; ?>
 
 <div id="content" style="margin-top: 56px;">
-    <h2>Daftar Riwayat Deteksi</h2>
+    <h2>Daftar Rekomendasi Kasus Baru</h2>
     <a href="z-dashboard.php" style="text-decoration: none; color: #d62268;">Dashboard</a> /
-    <a href="f-halriwayatpasien.php" style="text-decoration: none; color: #d62268;">Daftar Riwayat Deteksi</a> 
+    <a href="h-halkasusbaru.php" style="text-decoration: none; color: #d62268;">Daftar Rekomendasi Kasus Baru</a> 
 
     <div class="d-flex justify-content-between align-items-center mt-4">
         <div class="d-flex align-items-center mb-4">
@@ -133,7 +133,7 @@ $total_pages = ceil($total_records / $limit);
                         <th>Tanggal Pemeriksaan</th>
                         <th>Gejala Terpilih</th>
                         <th>Hasil Deteksi Dini</th>
-                        <th>Similarity</th>
+                        <th>Status Revisi</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -152,12 +152,12 @@ $total_pages = ceil($total_records / $limit);
                             echo implode('<br>', array_map('trim', $gejalaArray));
                             echo "</td>                               
                                 <td>" . htmlspecialchars($result['hasil_diagnosa']) . "</td>
-                                <td>" . htmlspecialchars($result['hasil_similarity']) . "%</td>
+                                <td>" . htmlspecialchars($result['status_revisi']) . "</td>
                                 <td>
                                     <a href='../page/cetak_hasillangsung.php?idhasil=" . $result['idhasil'] . "' class='btn btn-primary'>
                                         <i class='fas fa-print'></i>
                                     </a>
-                                    <a href='../handler/riwayathasil/admin-hapusriwayat.php?idhasil=" . $result['idhasil'] ."' class='btn btn-danger' onclick='return confirm(\"Apakah Anda yakin ingin menghapus riwayat ini?\")'>
+                                    <a href='../handler/kasusbaru/admin-hapuskasusbaru.php?idhasil=" . $result['idhasil'] ."' class='btn btn-danger' onclick='return confirm(\"Apakah Anda yakin ingin menghapus riwayat ini?\")'>
                                         <i class='fas fa-trash-alt'></i> 
                                     </a>
                                 </td>

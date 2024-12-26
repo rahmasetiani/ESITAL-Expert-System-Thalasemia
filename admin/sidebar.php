@@ -82,7 +82,13 @@
         <div class="nav-item">
             <a href="g-halrevisipakar.php" class="nav-link d-flex align-items-center">
                 <i class="bi bi-pencil-square me-3" style="font-size: 1.25rem;"></i>
-                <span class="nav-text">Revisi Pakar</span>
+                <span class="nav-text">Butuh Revisi Pakar</span>
+            </a>
+        </div>
+        <div class="nav-item">
+            <a href="h-halkasusbaru.php" class="nav-link d-flex align-items-center">
+            <i class="bi bi-folder-fill me-3" style="font-size: 1.25rem;"></i>
+                <span class="nav-text">Rekomendasi Kasus Baru</span>
             </a>
         </div>
         <?php endif; ?>
