@@ -116,6 +116,7 @@ while ($case = $caseResult->fetch_assoc()) {
 
     // Check if it's the best match
     if ($similarityScore > $bestmatchSimilarity) {
+        $bestmatchDiagnosa = $case['kodebasiskasus'];
         $bestmatchDiagnosa = $case['namapenyakit'];
         $bestmatchDeskripsi = $case['deskripsi'];  // Store the description of the disease
         $bestmatchSolusi = $case['solusipengobatan'];  // Store the solution for the disease

@@ -300,8 +300,16 @@ $total_pages = ceil($total_records / $limit);
     // Filter untuk mengecualikan similarity 0%
     combinedData = combinedData.filter(item => item.similarity > 0);
 
-    // Urutkan berdasarkan similarity tertinggi ke terendah
-    combinedData.sort((a, b) => b.similarity - a.similarity);
+    // Ambil nama penyakit unik dengan similarity tertinggi
+    const uniqueDiagnoses = {};
+    combinedData.forEach(item => {
+        if (!uniqueDiagnoses[item.diagnosa] || uniqueDiagnoses[item.diagnosa].similarity < item.similarity) {
+            uniqueDiagnoses[item.diagnosa] = item; // Simpan item jika similarity lebih tinggi
+        }
+    });
+
+    // Konversi kembali menjadi array dan urutkan berdasarkan similarity tertinggi
+    combinedData = Object.values(uniqueDiagnoses).sort((a, b) => b.similarity - a.similarity);
 
     // Tambahkan opsi ke dropdown
     combinedData.forEach((item, index) => {
@@ -325,6 +333,7 @@ $total_pages = ceil($total_records / $limit);
         similarityInput.value = combinedData[selectedIndex].similarity.toFixed(2);
     });
 }
+
 
 function saveEdit() {
     const idhasil = document.getElementById('editIdHasil').value;

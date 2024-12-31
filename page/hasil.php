@@ -186,26 +186,30 @@ if ($penyakitData) {
         <table class="table">
             <thead>
                 <tr>
+                    <th>Kode Basis Kasus</th>
                     <th>Deteksi Penyakit</th>
                     <th>Presentase (%)</th>
                 </tr>
             </thead>
             <tbody>
                 <?php 
-                // Memisahkan hasil diagnosa dan similarity berdasarkan koma
-                $diagnosaArray = explode(',', $lastResultMessage['keseluruhan_diagnosa']);
-                $similarityArray = explode(',', $lastResultMessage['keseluruhan_similarity']);
+                // Validasi keberadaan data di $lastResultMessage
+                $diagnosaArray = isset($lastResultMessage['keseluruhan_diagnosa']) ? explode(',', $lastResultMessage['keseluruhan_diagnosa']) : [];
+                $similarityArray = isset($lastResultMessage['keseluruhan_similarity']) ? explode(',', $lastResultMessage['keseluruhan_similarity']) : [];
 
-                // Gabungkan hasil diagnosa dan similarity ke dalam array asosiatif
+                // Pastikan semua array memiliki jumlah elemen yang sama
+                $count = min(count($diagnosaArray), count($similarityArray));
+
                 $diagnosaSimilarity = [];
-                for ($i = 0; $i < count($diagnosaArray); $i++) {
+                for ($i = 0; $i < $count; $i++) {
                     // Trim nilai dan hapus tanda kutip atau karakter yang tidak diinginkan
-                    $diagnosa = trim($diagnosaArray[$i], ' "[]');
-                    $similarityValue = trim($similarityArray[$i], ' "[]');
-                    
+                    $diagnosa = trim($diagnosaArray[$i], ' "[]') ?? '';
+                    $similarityValue = trim($similarityArray[$i], ' "[]') ?? '';
+
                     // Masukkan ke dalam array jika similarity > 0
                     if ($similarityValue > 0) {
                         $diagnosaSimilarity[] = [
+                            'kodeBasisKasus' => 'BK' . str_pad($i + 1, 3, '0', STR_PAD_LEFT), // Format kode basis kasus
                             'diagnosa' => $diagnosa,
                             'similarity' => (float)$similarityValue
                         ];
@@ -214,12 +218,21 @@ if ($penyakitData) {
 
                 // Urutkan array berdasarkan similarity dari terbesar ke terkecil
                 usort($diagnosaSimilarity, function ($a, $b) {
-                    return $b['similarity'] - $a['similarity']; // Membandingkan berdasarkan similarity
+                    return $b['similarity'] - $a['similarity'];
                 });
 
-                // Tampilkan data yang telah diurutkan
+                // Filter data untuk mengambil nama penyakit unik dengan similarity tertinggi
+                $uniqueDiagnosa = [];
                 foreach ($diagnosaSimilarity as $item) {
+                    if (!isset($uniqueDiagnosa[$item['diagnosa']])) {
+                        $uniqueDiagnosa[$item['diagnosa']] = $item; // Simpan data pertama (similarity tertinggi)
+                    }
+                }
+
+                // Tampilkan data unik berdasarkan similarity tertinggi
+                foreach ($uniqueDiagnosa as $item) {
                     echo "<tr>
+                            <td>" . htmlspecialchars($item['kodeBasisKasus']) . "</td>
                             <td>" . htmlspecialchars($item['diagnosa']) . "</td>
                             <td>" . htmlspecialchars($item['similarity']) . "%</td>
                           </tr>";
@@ -229,6 +242,7 @@ if ($penyakitData) {
         </table>
     </div>
 </div>
+
 
 </div>
 </section>
@@ -262,10 +276,10 @@ if ($penyakitData) {
 
         if (table.style.display === "none") {
             table.style.display = "block";
-            button.innerHTML = '<i class="fas fa-search-minus" id="diagnosesIcon"></i> Sembunyikan Semua Diagnosa'; // Ganti ikon dan teks
+            button.innerHTML = '<i class="fas fa-search-minus" id="diagnosesIcon"></i> Sembunyikan Semua Hasil Deteksi Dini'; // Ganti ikon dan teks
         } else {
             table.style.display = "none";
-            button.innerHTML = '<i class="fas fa-search-plus" id="diagnosesIcon"></i> Tampilkan Semua Diagnosa'; // Kembalikan ikon dan teks
+            button.innerHTML = '<i class="fas fa-search-plus" id="diagnosesIcon"></i> Tampilkan Semua Hasil Deteksi Dini'; // Kembalikan ikon dan teks
         }
     }
     </script>

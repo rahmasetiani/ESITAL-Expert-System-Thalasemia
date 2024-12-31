@@ -239,9 +239,10 @@ ob_start();
             <p style="color: #f44336;">Informasi penyakit tidak ditemukan.</p>
         <?php endif; ?>
         <h3">Detail Hasil Akurasi Deteksi Dini</h3>
-<table class="diagnosa-table">
+        <table class="diagnosa-table">
     <thead>
         <tr>
+            <th style="text-align: left;">Kode Basis Kasus</th>
             <th style="text-align: left;">Nama Penyakit</th>
             <th style="text-align: left;">Similarity (%)</th>
         </tr>
@@ -254,8 +255,9 @@ ob_start();
             $similarity = isset($keseluruhan_similarity[$index]) ? $keseluruhan_similarity[$index] : 0;
             if ($similarity > 0) {
                 $diagnosaWithSimilarity[] = [
-                    'diagnosa' => $diagnosa,
-                    'similarity' => $similarity
+                    'kodeBasisKasus' => 'BK' . str_pad($index + 1, 3, '0', STR_PAD_LEFT), // Format kode basis kasus sesuai indeks
+                    'diagnosa' => trim($diagnosa), // Hilangkan spasi berlebih
+                    'similarity' => (float)$similarity
                 ];
             }
         }
@@ -265,9 +267,18 @@ ob_start();
             return $b['similarity'] - $a['similarity']; // Mengurutkan dalam urutan menurun
         });
 
-        // Tampilkan hasil yang sudah diurutkan
+        // Filter untuk mengambil nama penyakit unik dengan similarity tertinggi
+        $uniqueDiagnosa = [];
         foreach ($diagnosaWithSimilarity as $item) {
+            if (!isset($uniqueDiagnosa[$item['diagnosa']])) {
+                $uniqueDiagnosa[$item['diagnosa']] = $item; // Hanya simpan yang pertama kali ditemukan (tertinggi)
+            }
+        }
+
+        // Tampilkan hasil yang sudah difilter
+        foreach ($uniqueDiagnosa as $item) {
             echo "<tr>
+                    <td>" . htmlspecialchars($item['kodeBasisKasus']) . "</td>
                     <td>" . htmlspecialchars($item['diagnosa']) . "</td>
                     <td>" . htmlspecialchars($item['similarity']) . "%</td>
                   </tr>";
@@ -275,7 +286,6 @@ ob_start();
         ?>
     </tbody>
 </table>
-
 
         <div class="signature">
             <p>Mengetahui</p>
