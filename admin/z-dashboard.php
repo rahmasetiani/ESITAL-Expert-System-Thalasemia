@@ -56,21 +56,8 @@ if ($ambang_batas_row = mysqli_fetch_assoc($ambang_batas_result)) {
     $nilai_ambang_batas = $ambang_batas_row['nilai'];
 }
 
-// Query untuk mengambil data jumlah pasien per penyakit
-$count_penyakit_pasien_query = "SELECT p.namapenyakit, COUNT(h.idhasil) AS jumlah_pasien 
-                               FROM penyakit p 
-                               LEFT JOIN hasil h ON h.hasil_diagnosa LIKE CONCAT('%', p.namapenyakit, '%') 
-                               GROUP BY p.namapenyakit";
-$penyakit_pasien_result = mysqli_query($conn, $count_penyakit_pasien_query);
-
-$penyakit_data = [];
-$jumlah_pasien_data = [];
-while ($row = mysqli_fetch_assoc($penyakit_pasien_result)) {
-    $penyakit_data[] = $row['namapenyakit'];
-    $jumlah_pasien_data[] = (int)$row['jumlah_pasien'];
-}
-
-$count_jenis_kelamin_query = "
+// Query untuk menghitung total pasien per penyakit
+$count_penyakit_pasien_query = "
     SELECT p.namapenyakit, 
            h.jk_pasien, 
            COUNT(h.idhasil) AS jumlah_pasien
@@ -78,31 +65,45 @@ $count_jenis_kelamin_query = "
     LEFT JOIN hasil h ON h.hasil_diagnosa LIKE CONCAT('%', p.namapenyakit, '%')
     GROUP BY p.namapenyakit, h.jk_pasien
 ";
-$jenis_kelamin_pasien_result = mysqli_query($conn, $count_jenis_kelamin_query);
+$penyakit_pasien_result = $conn->query($count_penyakit_pasien_query);
 
+// Inisialisasi data
 $penyakit_data = [];
 $jumlah_pasien_laki_laki = [];
 $jumlah_pasien_perempuan = [];
-
-while ($row = mysqli_fetch_assoc($jenis_kelamin_pasien_result)) {
-    $penyakit_data[] = $row['namapenyakit'];
-    if ($row['jk_pasien'] == 'Laki-laki') {
-        $jumlah_pasien_laki_laki[] = (int)$row['jumlah_pasien'];
-    } elseif ($row['jk_pasien'] == 'Perempuan') {
-        $jumlah_pasien_perempuan[] = (int)$row['jumlah_pasien'];
-    }
-}
-
-// Hitung total jumlah pasien per penyakit (laki-laki + perempuan)
 $jumlah_pasien_total = [];
-foreach ($penyakit_data as $penyakit) {
-    $jumlah_pasien_total[] = array_sum([
-        isset($jumlah_pasien_laki_laki[array_search($penyakit, $penyakit_data)]) ? $jumlah_pasien_laki_laki[array_search($penyakit, $penyakit_data)] : 0,
-        isset($jumlah_pasien_perempuan[array_search($penyakit, $penyakit_data)]) ? $jumlah_pasien_perempuan[array_search($penyakit, $penyakit_data)] : 0
-    ]);
-}
-?>
 
+// Memproses hasil query
+while ($row = $penyakit_pasien_result->fetch_assoc()) {
+    $penyakit = $row['namapenyakit'];
+    $jenis_kelamin = $row['jk_pasien'];
+    $jumlah_pasien = (int)$row['jumlah_pasien'];
+
+    // Tambahkan nama penyakit jika belum ada
+    if (!isset($jumlah_pasien_total[$penyakit])) {
+        $penyakit_data[] = $penyakit;
+        $jumlah_pasien_laki_laki[$penyakit] = 0;
+        $jumlah_pasien_perempuan[$penyakit] = 0;
+        $jumlah_pasien_total[$penyakit] = 0;
+    }
+
+    // Hitung jumlah pasien berdasarkan jenis kelamin
+    if ($jenis_kelamin === 'Laki-laki') {
+        $jumlah_pasien_laki_laki[$penyakit] += $jumlah_pasien;
+    } elseif ($jenis_kelamin === 'Perempuan') {
+        $jumlah_pasien_perempuan[$penyakit] += $jumlah_pasien;
+    }
+
+    // Hitung total pasien per penyakit
+    $jumlah_pasien_total[$penyakit] += $jumlah_pasien;
+}
+
+// Konversi array untuk grafik
+$jumlah_pasien_total = array_values($jumlah_pasien_total);
+$jumlah_pasien_laki_laki = array_values($jumlah_pasien_laki_laki);
+$jumlah_pasien_perempuan = array_values($jumlah_pasien_perempuan);
+$penyakit_data = json_encode($penyakit_data);
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -495,48 +496,63 @@ foreach ($penyakit_data as $penyakit) {
 
 <script>
     var ctx = document.getElementById('penyakitChart').getContext('2d');
-var penyakitChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: <?php echo json_encode($penyakit_data); ?>, // Penyakit data labels
-        datasets: [
-            {
-                label: 'Jumlah Pasien',
-                data: <?php echo json_encode($jumlah_pasien_total); ?>, // Total jumlah pasien
-                backgroundColor: 'rgba(255, 223, 0, 0.5)', // Kuning untuk total pasien
-                borderColor: 'rgba(255, 223, 0, 1)', // Kuning tua untuk border
-                borderWidth: 1
+    var penyakitChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: <?php echo $penyakit_data; ?>, // Nama penyakit
+            datasets: [
+                {
+                    label: 'Total Pasien',
+                    data: <?php echo json_encode($jumlah_pasien_total); ?>, // Total jumlah pasien
+                    backgroundColor: 'rgba(255, 223, 0, 0.5)', // Kuning
+                    borderColor: 'rgba(255, 223, 0, 1)', // Kuning tua
+                    borderWidth: 1
+                },
+                {
+                    label: 'Laki-laki',
+                    data: <?php echo json_encode($jumlah_pasien_laki_laki); ?>, // Pasien laki-laki
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)', // Biru
+                    borderColor: 'rgba(54, 162, 235, 1)', // Biru tua
+                    borderWidth: 1
+                },
+                {
+                    label: 'Perempuan',
+                    data: <?php echo json_encode($jumlah_pasien_perempuan); ?>, // Pasien perempuan
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)', // Pink
+                    borderColor: 'rgba(255, 99, 132, 1)', // Pink tua
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    enabled: true,
+                }
             },
-            {
-                label: 'Laki-laki',
-                data: <?php echo json_encode($jumlah_pasien_laki_laki); ?>, // Male patients data
-                backgroundColor: 'rgba(54, 162, 235, 0.5)', // Biru untuk laki-laki
-                borderColor: 'rgba(54, 162, 235, 1)', // Biru tua untuk border
-                borderWidth: 1
-            },
-            {
-                label: 'Perempuan',
-                data: <?php echo json_encode($jumlah_pasien_perempuan); ?>, // Female patients data
-                backgroundColor: 'rgba(255, 99, 132, 0.5)', // Pink untuk perempuan
-                borderColor: 'rgba(255, 99, 132, 1)', // Pink tua untuk border
-                borderWidth: 1
-            }
-        ]
-    },
-    options: {
-        responsive: true,
-        scales: {
-            x: {
-                beginAtZero: true
-            },
-            y: {
-                beginAtZero: true
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Jumlah Pasien'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Penyakit'
+                    }
+                }
             }
         }
-    }
-});
-
+    });
 </script>
+
 
 <script>
     function notifyAdminPengguna() {

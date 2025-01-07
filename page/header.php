@@ -23,10 +23,15 @@ require '../database/koneksi.php'; // database
     <link rel="stylesheet" href="../asset/css/riwayat.css">
 
 </head>
+<style>
+    body {
+    padding-top: 65px; /* Sesuaikan dengan tinggi navbar Anda */
+}
+
+</style>
 <body>
-    <!-- Navbar -->
 <header>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
             <a class="navbar-brand" href="#">EXSI<span style="color: #d62268;">THAL</span></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,25 +58,23 @@ require '../database/koneksi.php'; // database
                     <?php endif; ?>
                 </ul>
                 <ul class="navbar-nav">
-                    <!-- Check if user is logged in -->
                     <?php if(isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true): ?>
                         <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-person-circle me-2"></i>
-                        <?php echo $_SESSION['namalengkap']; ?>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li class="dropdown-item">
-                            <strong><?php echo $_SESSION['namalengkap']; ?></strong>
-                            <br>
-                            <small><?php echo $_SESSION['email']; ?></small>
+                            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle me-2"></i>
+                                <?php echo $_SESSION['namalengkap']; ?>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li class="dropdown-item">
+                                    <strong><?php echo $_SESSION['namalengkap']; ?></strong>
+                                    <br>
+                                    <small><?php echo $_SESSION['email']; ?></small>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="../page/pengaturan.php">Pengaturan</a></li>
+                                <li><a class="dropdown-item" href="../page/logout.php">Keluar</a></li>
+                            </ul>
                         </li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="../page/pengaturan.php">Pengaturan</a></li>
-                        <li><a class="dropdown-item" href="../page/logout.php">Keluar</a></li>
-                    </ul>
-                </li>
-
                     <?php else: ?>
                         <li class="nav-item">
                             <a class="nav-link" href="login.php">Masuk / Daftar</a>

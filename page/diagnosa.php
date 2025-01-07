@@ -81,9 +81,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 echo '<tr style="background-color: #f9f9f9; border-bottom: 1px solid #ddd;">
                                     <td style="text-align: center; padding: 8px; font-weight: bold; color: #555;">' . htmlspecialchars($row['kodegejala']) . '</td>
                                     <td style="padding: 8px; color: #333;">' . htmlspecialchars($row['namagejala']) . '</td>
-                                    <td style="text-align: center; padding: 8px;">
-                                        <input class="form-check-input" type="checkbox" name="gejala[]" value="' . htmlspecialchars($row['kodegejala']) . '" style="width: 1.5em; height: 1.5em;">
-                                    </td>
+                                 <td style="text-align: center; padding: 8px;">
+                                    <input class="form-check-input" type="checkbox" name="gejala[]" value="' . htmlspecialchars($row['kodegejala']) . '" style="width: 1.5em; height: 1.5em; border: 2px solid #333;">
+                                </td>
+
                                 </tr>';
                             }
                         } else {

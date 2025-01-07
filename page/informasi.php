@@ -52,10 +52,11 @@ include '../handler/penyakit/get_penyakit.php'; // Memanggil get_penyakit
         </div>
        <br><br>
         <a href="diagnosa.php" class="btn custom-btn btn-lg">Deteksi Dini Thalassemia</a>
-
     </div>
 </section>
-
+<section>
+<a style="font-size: 12px; display: block; margin-right: 10px; text-align: right;">Sumber Img: https://br.freepik.com</a>
+</section>
 <?php
 include 'footer.php'; // Memanggil footer
 ?>
