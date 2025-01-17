@@ -64,6 +64,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $alamat = $_POST['alamat'];
     $new_password = $_POST['password'];
 
+    if (!empty($new_password) && strlen($new_password) < 5) {
+        echo "<script>alert('Password harus minimal 5 karakter!'); window.location.href='pengaturan.php';</script>";
+        exit;
+    }
+
     // Hash password jika diisi
     $password_hashed = empty($new_password) ? $password : password_hash($new_password, PASSWORD_DEFAULT);
 
@@ -140,7 +145,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label for="password" class="form-label fw-bold" style="color: #000000;">
                             <i class="bi bi-key"></i> Password Baru
                         </label>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Kosongkan jika tidak ingin mengubah password">
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Kosongkan jika tidak ingin mengubah password">
+                            <button type="button" class="btn btn-outline-secondary toggle-password">
+                                <i class="bi bi-eye-slash"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -162,3 +172,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script src="../asset/js/admin.js"></script>
 </body>
 </html>
+
+<script>
+    document.querySelectorAll('.toggle-password').forEach(button => {
+        button.addEventListener('click', function () {
+            const input = this.previousElementSibling; // Ambil input sebelum tombol
+            const icon = this.querySelector('i'); // Ambil ikon dalam tombol
+            
+            if (input.type === 'password') {
+                input.type = 'text'; // Ubah tipe input menjadi text
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye'); // Ubah ikon menjadi mata terbuka
+            } else {
+                input.type = 'password'; // Kembalikan ke tipe password
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash'); // Ubah ikon menjadi mata tertutup
+            }
+        });
+    });
+</script>
+

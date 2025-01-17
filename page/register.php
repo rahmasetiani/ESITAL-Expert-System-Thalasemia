@@ -26,11 +26,24 @@
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-lock"></i></span>
                                 <input type="password" class="form-control" id="password" name="password" placeholder="Masukan password" required>
+                                <span class="input-group-text toggle-password" style="cursor: pointer;">
+                                    <i class="fas fa-eye-slash"></i>
+                                </span>
                             </div>
                         </div>
-                        
+                        <div class="mb-3">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Konfirmasi password" required>
+                                <span class="input-group-text toggle-password" style="cursor: pointer;">
+                                    <i class="fas fa-eye-slash"></i>
+                                </span>
+                            </div>
+                        </div>
+
                         <!-- New Fields -->
                         <div class="mb-3">
+                            <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-calendar"></i></span>
                                 <input type="date" class="form-control" id="tanggal_lahir" name="tanggal_lahir" required>
@@ -64,5 +77,29 @@
         </div>
     </div>
 </section>
+
+<script>
+    // Toggle visibility of password fields
+    document.querySelectorAll('.toggle-password').forEach(item => {
+        item.addEventListener('click', function () {
+            const passwordInput = this.previousElementSibling;
+            const icon = this.querySelector('i');
+
+            // Toggle password visibility
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        });
+    });
+
+
+</script>
+
 
 <?php include 'footer.php'; ?>

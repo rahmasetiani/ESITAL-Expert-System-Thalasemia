@@ -20,9 +20,13 @@
                         <div class="mb-3">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                <input type="password" class="form-control" name="password" placeholder="Masukan password" required>
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Masukan password" required>
+                                <span class="input-group-text toggle-password" style="cursor: pointer;">
+                                    <i class="fas fa-eye-slash"></i>
+                                </span>
                             </div>
                         </div>
+
                         <button type="submit" class="btn btn-primary w-100" style="background-color: #d62268;">Masuk</button>
                     </form>
                      <!-- Display error message if set -->
@@ -42,3 +46,24 @@
 </section>
 
 <?php include 'footer.php'; ?>
+
+<script>
+    // Toggle visibility of password
+    document.querySelectorAll('.toggle-password').forEach(item => {
+        item.addEventListener('click', function () {
+            const passwordInput = this.previousElementSibling;
+            const icon = this.querySelector('i');
+
+            // Toggle between password and text input
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        });
+    });
+</script>

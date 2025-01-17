@@ -1,6 +1,5 @@
 <?php
 // prosescbr.php
-
 session_start();
 require '../../database/koneksi.php'; // Sesuaikan path koneksi
 
@@ -33,7 +32,7 @@ if (isset($_SESSION['last_idhasil'])) {
     }
 }
 
-// Fetch selected symptoms for the patient from the pasien_gejala table
+// Ambil gejala yang dipilih untuk pasien dari tabel pasien_gejala
 $gejalaQuery = "SELECT gejala_terpilih FROM pasien_gejala ORDER BY id DESC LIMIT 1";
 $gejalaResult = $conn->query($gejalaQuery);
 
@@ -45,7 +44,7 @@ if ($gejalaResult && $gejalaResult->num_rows > 0) {
     $selectedGejala = [];
 }
 
-// Fetch the names and weights of the selected symptoms from the gejala table
+// Ambil nama dan bobot gejala yang dipilih dari tabel gejala
 $gejalaNames = [];
 $gejalaWeights = [];
 foreach ($selectedGejala as $kode) {
@@ -63,13 +62,13 @@ foreach ($selectedGejala as $kode) {
     }
 }
 
-// Retrieve the threshold value for similarity from the ambang_batas table
+// Retrieve/Ambil nilai ambang batas kesamaan dari tabel ambang_batas
 $thresholdQuery = "SELECT nilai FROM ambang_batas WHERE id = 1 LIMIT 1";
 $thresholdStmt = $conn->query($thresholdQuery);
 $thresholdRow = $thresholdStmt->fetch_assoc();
 $threshold = $thresholdRow ? $thresholdRow['nilai'] : 0.0;
 
-// Retrieve patient details based on user ID
+// Retrieve/Ambil detail pasien berdasarkan ID pengguna
 $patientQuery = "SELECT u.namalengkap AS nama_pasien, u.tanggal_lahir AS tanggallahir_pasien, u.alamat AS alamat_pasien, u.jenis_kelamin AS jk_pasien
                  FROM user u 
                  JOIN pasien_gejala p ON u.id = p.iduser
@@ -80,7 +79,7 @@ $patientStmt->execute();
 $patientResult = $patientStmt->get_result();
 $row = $patientResult->fetch_assoc();
 
-// Retrieve cases from basiskasus and calculate similarity
+// Retrieve/Ambil kasus dari tabel basiskasus dan hitung kesamaan
 $caseQuery = "SELECT bk.kodebasiskasus, bk.kodepenyakit, p.namapenyakit, p.deskripsi, p.solusipengobatan, 
               GROUP_CONCAT(g.kodegejala) AS gejala, SUM(g.bobot) AS total_bobot 
               FROM basiskasus bk 
@@ -90,7 +89,7 @@ $caseQuery = "SELECT bk.kodebasiskasus, bk.kodepenyakit, p.namapenyakit, p.deskr
               GROUP BY bk.kodebasiskasus";
 $caseResult = $conn->query($caseQuery);
 
-// Initialize array for storing all diagnoses and similarity
+// Inisialisasi array untuk menyimpan semua diagnosis dan kesamaan
 $keseluruhanDiagnosa = [];
 $keseluruhanSimilarity = [];
 $bestmatchDiagnosa = '';
@@ -98,12 +97,12 @@ $bestmatchSimilarity = 0;
 $bestmatchDeskripsi = '';
 $bestmatchSolusi = '';
 
-// Iterate to find best match and add diagnosis to keseluruhanDiagnosa
+// Lakukan iterasi untuk mencari kecocokan terbaik dan tambahkan diagnosis ke keseluruhanDiagnosa
 while ($case = $caseResult->fetch_assoc()) {
     $caseGejala = explode(",", $case['gejala']);
     $caseTotalBobot = $case['total_bobot'];
 
-    // Calculate the sum of matching symptoms' weights
+    // Hitung jumlah bobot gejala yang cocok
     $matchingBobot = 0;
     foreach ($selectedGejala as $gejala) {
         if (in_array($gejala, $caseGejala)) {
@@ -111,10 +110,10 @@ while ($case = $caseResult->fetch_assoc()) {
         }
     }
 
-    // Calculate similarity as matching weight / total weight of the case
+    // Hitung kesamaan sebagai bobot yang cocok / total bobot dari kasus
     $similarityScore = $caseTotalBobot > 0 ? $matchingBobot / $caseTotalBobot : 0;
 
-    // Check if it's the best match
+    // Periksa apakah ini merupakan kecocokan terbaik
     if ($similarityScore > $bestmatchSimilarity) {
         $bestmatchDiagnosa = $case['kodebasiskasus'];
         $bestmatchDiagnosa = $case['namapenyakit'];
@@ -124,12 +123,12 @@ while ($case = $caseResult->fetch_assoc()) {
         $bestmatchSimilarity = $similarityScore;
     }
 
-    // Add diagnosis to keseluruhanDiagnosa and similarity
+    // "Tambahkan diagnosis ke dalam keseluruhanDiagnosa dan keseluruhanSimilarity."
     $keseluruhanDiagnosa[] = $case['namapenyakit'];  // Store the name of the disease
     $keseluruhanSimilarity[] = round($similarityScore * 100, 2);
 }
 
-// If similarity is below the threshold, adjust the result
+// "Jika similarity di bawah ambang batas, sesuaikan hasilnya."
 if ($bestmatchSimilarity < ($threshold / 100)) {
     $bestmatchDiagnosa = "Tidak Teridentifikasi Penyakit Thalassemia";
 } else {

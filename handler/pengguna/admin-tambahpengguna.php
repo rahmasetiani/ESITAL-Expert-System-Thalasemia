@@ -11,11 +11,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $alamat = trim($_POST['alamat']);
     $role = isset($_POST['role']) ? intval($_POST['role']) : 0; // Default role: Pasien
 
+    // Validasi password minimal 5 karakter
+    if (!empty($password) && strlen($password) < 5) {
+        echo "<script>alert('Password harus minimal 5 karakter!'); window.location.href='../../admin/a-halpengguna.php';</script>";
+        exit;
+    }
+
     // Validasi input
     if (empty($namalengkap) || empty($email) || empty($password) || empty($tanggal_lahir) || empty($jenis_kelamin) || empty($alamat)) {
         echo "<script>alert('Semua field harus diisi!'); window.location.href='../../admin/a-halpengguna.php';</script>";
         exit();
     }
+
 
     // Hash password
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
