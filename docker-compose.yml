@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: exsithal
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0.40-debian
+    container_name: mysql_db_1
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: exsithal@2025
+      MYSQL_DATABASE: exsithal
+      MYSQL_USER: exsithal
+      MYSQL_PASSWORD: exsithal@2025
+    volumes:
+      - esital-expert-system-thalasemia_db_data:/var/lib/mysql
+
+volumes:
+  esital-expert-system-thalasemia_db_data:
+    external: true

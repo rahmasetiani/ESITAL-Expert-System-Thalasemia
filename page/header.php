@@ -1,8 +1,7 @@
 <?php 
+ob_start();
 session_start();
-
 require '../database/koneksi.php'; // database
-
 ?>
 
 <!DOCTYPE html>

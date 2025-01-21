@@ -1,8 +1,8 @@
 <?php
 // Database connection
-$servername = "localhost"; // Replace with your database server
+$servername = "103.196.152.154"; // Replace with your database server
 $username = "root";        // Replace with your database username
-$password = "";            // Replace with your database password
+$password = "exsithal@2025";            // Replace with your database password
 $dbname = "exsithal";      // Replace with your database name
 
 // Create connection

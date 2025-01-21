@@ -276,3 +276,7 @@ input[type="checkbox"] {
 
 
 </style>
+
+<?php
+ob_end_flush(); // Send buffered output
+?>
